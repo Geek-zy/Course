@@ -1,0 +1,36 @@
+打印属性
+打印 HTML 文档总是会出现问题。在 CSS2 中，我们可以借助打印属性让打印 web 内容更容易一些。
+属性	描述	值
+orphans	设置元素放在页面底部时所允许的最少文本行数。	number
+marks	
+设置是否在内容区之外但是在画布的可打印区域内放“十字标志”。
+请注意，CSS2.1 已删除该属性。
+none
+crop
+cross
+page	
+这个属性与 size 属性结合可以指定打印一个元素时所用的特定页面类型。
+请注意，CSS2.1 已删除该属性。
+auto identifier
+page-break-after	设置元素后是否应当放置分页符。	
+auto
+always
+avoid
+left
+right
+page-break-before	设置元素前否应当放置分页符。	
+auto
+always
+avoid
+left
+right
+page-break-inside	设置元素内部是否应当放置分页符。	
+auto
+avoid
+size	
+利用这个属性，创作人员可以声明打印一个元素时所用页框的大小和方向。它可以与 page 结合使用。不过并不要求一定如此。
+请注意，CSS2.1 已删除该属性。
+auto
+portrait
+landscape
+widows	设置元素放在页面顶部时所允许的最少文本行数。	number

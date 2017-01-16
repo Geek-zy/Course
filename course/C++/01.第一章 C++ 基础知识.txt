@@ -1,0 +1,734 @@
+1.1 C++程序结构 （Structure of a program）
+下面我们从一个最简单的程序入手看一个C++程序的组成结构。
+// my first program in C++
+#include <iostream.h>
+using namespace std;
+
+int main() {
+    cout << "Hello World!";
+    return 0;
+}
+
+Hello World!
+上面左侧显示了我们的第一个程序的源代码，代码文件名称为hellowworld.cpp。右边显示了程序被编译执行后的输出结果。编辑和编译一个程序的方法取决于你用的是什么编译器，根据它是否有图形化的界面及版本的不同，编译方法也有可能不同，具体请参照你所使用的编译器的使用说明。
+以上程序是多数初学者学会写的第一个程序，它的运行结果是在屏幕上打出”Hello World!”这句话。 虽然它可能是C++可写出的最简单的程序之一，但其中已经包含了每一个C++程序的基本组成结构。 下面我们就逐个分析其组成结构的每一部分：
+// my first program in C++
+这是注释行。所有以两个斜线符号(//)开始的程序行都被认为是注释行，这些注释行是程序员写在程序源代码内，用来对程序作简单解释或描述的， 对程序本身的运行不会产生影响。在本例中， 这行注释对本程序是什么做了一个简要的描述。
+# include < iostream.h >
+以#标志开始的句子是预处理器的指示语句。它们不是可执行代码，只是对编译器作出指示。在本例中这个句子# include < iostream.h > 告诉编译器的预处理器将输入输出流的标准头文件(iostream.h)包括在本程序中。这个头文件包括了C++中定义的基本标准输入-输出程序库的声明。此处它被包括进来是因为在本程序的后面部分中将用到它的功能。
+using namespace std;
+C++标准函数库的所有元素都被声明在一个名空间中，这就是std名空间。因此为了能够访问它的功能，我们用这条语句来表达我们将使用标准名空间中定义的元素。这条语句在使用标准函数库的C++程序中频繁出现，本教程中大部分代码例子中也将用到它。
+int main()
+这一行为主函数(main function)的起始声明。main function是所有C++程序的运行的起始点。 不管它是在代码的开头，结尾还是中间 – 此函数中的代码总是在程序开始运行时第一个被执行。并且，由于同样的原因，所有C++程序都必须有一个main function。
+main 后面跟了一对圆括号（），表示它是一个函数。C++中所有函数都跟有一对圆括号 （），括号中可以有一些输入参数。如例题中显示，主函数(main function)的内容紧跟在它的声明之后，由花括号 （{}）括起来。
+cout << “Hellow World!”;
+这个语句在本程序中最重要。 cout 是C++中的标准输出流(通常为控制台，即屏幕)，这句话把一串字符串（本例中为”Hello World”）插入输出流（控制台输出）中。cout 在的声明在头文件iostream.h中，所以要想使用cout 必须将该头文件包括在程序开始处。
+注意这个句子以分号(;)结尾 。分号标示了一个语句的结束，C++的每一个语句都必须以分号结尾。 (C++ 程序员最常犯的错误之一就是忘记在语句末尾写上分号) 。
+return 0;
+返回语句(return) 引起主函数 main()执行结束，并将该语句后面所跟代码(在本例中为0) 返回。这是在程序执行没有出现任何错误的情况下最常见的程序结束方式。在后面的例子中你会看到所有C++程序都以类似的语句结束。
+
+你可能注意到并不是程序中的所有的行都会被执行。程序中可以有注释行（以//开头），有编译器预处理器的指示行（以#开头），然后有函数的声明（本例中main函数），最后是程序语句（例如调用cout <<），最后这些语句行全部被括在主函数的花括号({})内。
+本例中程序被写在不同的行中以方便阅读。其实这并不是必须的。例如，以下程序
+int main ()
+{
+    cout << " Hello World ";
+    return 0;
+}
+也可以被写成：
+int main () { cout << " Hello World "; return 0; }
+以上两段程序是完全相同的。
+
+在C++中，语句的分隔是以分号(;)为分隔符的。分行写代码只是为了更方便人阅读。
+以下程序包含更多的语句：
+// my second program in C++
+#include <iostream.h>
+
+int main ()
+{
+    cout << "Hello World! ";
+    cout << "I'm a C++ program";
+    return 0;
+}
+
+Hello World! I'm a C++ program
+在这个例子中，我们在两个不同的语句中调用了cout << 函数两次。再一次说明分行写程序代码只是为了我们阅读方便，因为这个main 函数也可以被写为以下形式而没有任何问题:
+int main () { cout << " Hello World! "; cout << " I'm to C++ program "; return 0; }
+
+为方便起见，我们也可以把代码分为更多的行来写：
+
+#include <iostream.h>
+int main ()
+{
+    cout <<
+    "Hello World!";
+    cout
+    << "I'm a C++ program";
+    return 0;
+}
+它的运行结果将和上面的例子完全一样。
+这个规则对预处理器指示行（以#号开始的行）并不适用，因为它们并不是真正的语句。它们由预处理器读取并忽略，并不会生成任何代码。因此他们每一个必须单独成行，末尾不需要分号(;)
+
+注释 (Comments)
+注释(comments)是源代码的一部分，但它们会被编译器忽略。它们不会生成任何执行代码。 使用注释的目的只是使程序员可以在源程序中插入一些说明解释性的内容。
+C++ 支持两中插入注释的方法:
+// line comment
+/* block comment */
+第一种方法为行注释，它告诉编译器忽略从//开始至本行结束的任何内容。第二种为块注释（段注释），告诉编译器忽略在/*符号和*/符号之间的所有内容，可能包含多行内容。
+在以下我们的第二个程序中，我们插入了更多的注释。
+/* my second program in C++
+with more comments */
+
+#include <iostream.h>
+
+int main ()
+{
+    cout << "Hello World! "; // says Hello World!
+    cout << "I'm a C++ program"; // says I'm a C++ program
+    return 0;
+}
+
+Hello World! I'm a C++ program
+
+如果你在源程序中插入了注释而没有用//符号或/*和*/符号，编译器会把它们当成C++的语句，那么在编译时就会出现一个或多个错误信息。
+1.2 变量和数据类型 （Variables and Data types ）
+你可能觉得这个“Hellow World”程序用处不大。我们写了好几行代码，编译，然后执行生成的程序只是为了在屏幕上看到一句话。的确，我们直接在屏幕上打出这句话会更快。但是编程并不仅限于在屏幕上打出文字这么简单的工作。为了能够进一步写出可以执行更有用的任务的程序，我们需要引入变量（variable）这个的概念。
+让我们设想这样一个例子，我要求你在脑子里记住5这个数字，然后再记住2这个数字。你已经存储了两个数值在你的记忆里。现在我要求你在我说的第一个数值上加1，你应该保留6 （即5+1）和2在你的记忆里。现在如果我们将两数相减可以得到结果4。
+所有这些你在脑子里做的事情与计算机用两个变量可以做的事情非常相似。同样的处理过程用C++来表示可以写成下面一段代码：
+a = 5;
+b = 2;
+a = a + 1;
+result = a - b;
+
+很明显这是一个很简单的例子，因为我们只用了两个小的整数数值。但是想一想你的电脑可以同时存储成千上万这样的数值，并进行复杂的数学运算。
+因此，我们可以将变量（variable）定义为内存的一部分，用以存储一个确定的值。
+每一个变量 (variable)需要一个标识，以便将它与其他变量相区别，例如，在前面的代码中，变量标识是a, b, 和result。我们可以给变量起任何名字，只要它们是有效的标识符。
+
+标识（Identifiers）
+有效标识由字母(letter)，数字(digits)和下划线 ( _ )组成。标识的长度没有限制，但是有些编译器只取前32个字符（剩下的字符会被忽略）。
+空格(spaces)，标点(punctuation marks)和符号(symbols) 都不可以出现在标识中。 只有字母(letters)，数字(digits) 和下划线(_)是合法的。并且变量标识必须以字母开头。标识也可能以下划线（_）开头，但这种标识通常是保留给为外部连接用的。标识不可以以数字开头。
+必须注意的另一条规则是当你给变量起名字时不可以和C++语言的关键字或你所使用的编译器的特殊关键字同名，因为这样与这些关键字产生混淆。例如，以下列出标准保留关键字，他们不允许被用作变量标识名称：
+asm, auto, bool, break, case, catch, char, class, const, const_cast, continue, default, delete, do, double, dynamic_cast, else, enum, explicit, extern, false, float, for, friend, goto, if, inline, int, long, mutable, namespace, new, operator, private, protected, public, register, reinterpret_cast, return, short, signed, sizeof, static, static_cast, struct, switch, template, this, throw, true, try, typedef, typeid, typename, union, unsigned, using, virtual, void, volatile, wchar_t, while
+另外，不要使用一些操作符的替代表示作为变量标识，因为在某些环境中它们可能被用作保留词：
+and, and_eq, bitand, bitor, compl, not, not_eq, or, or_eq, xor, xor_eq
+你的编译器还可能包含一些特殊保留词，例如许多生成16位码的编译器（比如一些DOS编译器）把 far, huge和 near也作为关键字。
+非常重要：C++语言是“ 大小写敏感”(“case sensitive”) 的，即同样的名字字母大小写不同代表不同的变量标识。因此，例如变量RESULT，变量result和变量Result分别表示三个不同的变量标识.
+
+基本数据类型（Fundamental Data types）
+编程时我们将变量存储在计算机的内存中，但是计算机要知道我们要用这些变量存储什么样的值，因为一个简单的数值，一个字符，或一个巨大的数值在内存所占用的空间是不一样的。
+计算机的内存是以字节(byte)为单位组织的。一个字节（byte）是我们在C++中能够操作的最小的内存单位。一个字节(byte)可以存储相对较小数据：一个单个的字符或一个小整数（通常为一个0到255之间的整数）。但是计算机可以同时操作处理由多个字节组成复杂数据类型，比如长整数(long integers)和小数（decimals）。以下列表总结了现有的C++基本数据类型，以及每一类型所能存储的数据范围：
+数据类型（DATA TYPES）
+名称	字节数*	描述	范围*
+char	1	字符（character）或整数（integer ）， 8位（bits）长	有符号（signed）: -128 到 127
+无符号（unsigned）: 0 到 255
+short int (short)	2	短整数（integer ）16位（bits）长	有符号（signed）: -32768 到 32767
+无符号（unsigned）: 0 到 65535
+long int (long)	4	长整数（integer ）32位（bits）长	有符号（signed）:-2147483648 到 2147483647
+无符号（unsigned）: 0 到 4294967295
+int	4	整数（integer）	有符号(signed): -2147483648 到 2147483647
+无符号（unsigned): 0 到 4294967295
+float	4	浮点数（floating point number）	3.4e + / - 38 （7 个数字（7digits））
+double	8	双精度浮点数（double precision floating point number）	1.7e + / - 308 (15 digits)
+long double	8	长双精度浮点数（long double precision floating point number）	1.7e + / - 308 (15 digits)
+bool	1	布尔Boolean值。它只能是真(true)或假(false)两值之一。	true 或 false
+wchar_t	2	宽字符(Wide character) 。这是为存储两字节(2 bytes) 长的国际字符而设计的类型。	一个宽字符（1 wide characters）
+* 字节数一列和范围一列可能根据程序编译和运行的系统不同而有所不同。这里列出的数值是多数32位系统的常用数据。对于其他系统，通常的说法是整型(int)具有根据系统结构建议的自然长度（即一个字one word的长度），而4中整型数据char, short, int, long的长度必须是递增的，也就是说按顺序每一类型必须大于等于其前面一个类型的长度。同样的规则也适用于浮点数类型float, double和 long double，也是按递增顺序。
+除以上列出的基本数据类型外，还有指针（pointer）和void 参数表示类型，我们将在后面看到。
+变量的声明（Declaration of variables）
+在C++中要使用一个变量必须先声明（declare）该变量的数据类型。声明一个新变量的语法是写出数据类型标识符（例如int, short, float...) 后面跟一个有效的变量标识名称。例如：
+int a;
+float mynumber;
+以上两个均为有效的变量声明（variable declaration）。第一个声明一个标识为a 的整型变量(int variable)，第二个声明一个标识为mynumber 的浮点型变量(float variable)。声明之后，我们就可以在后面的程序中使用变量a和 mynumber 了。
+如果你需要声明多个同一类型的变量，你可以将它们缩写在同一行声明中，在标识之间用逗号(comma) 分隔。例如：
+int a, b, c;
+以上语句同时定义了a、b、c 3个整型变量，它与下面的写法完全等同：
+int a;
+int b;
+int c;
+整型数据类型 (char, short, long 和 int) 可以是有符号的（signed）或无符号的（unsigned ），这取决于我们需要表示的数据范围。有符号类型(signed)可以表示正数和负数，而无符号类型(unsigned)只能表示正数和0。在定义一个整型数据变量时可以在数据类型前面加关键字 signed 或 unsigned 来声明数据的符号类型。例如：
+unsigned short NumberOfSons;
+signed int MyAccountBalance;
+如果我们没有特别写出signed或 unsigned，变量默认为signed，因此以上第二个声明我们也可以写成：
+int MyAccountBalance;
+因为以上两种表示方式意义完全一样，因此我们在源程序通常省略关键字signed 。
+唯一的例外是字符型（char）变量，这种变量独立存在，与signed char 和 unsigned char型均不相同。
+short 和 long 可以被单独用来表示整型基本数据类型，short 相当于 short int， long 相当于 long int。也就是说 short year; 和 short int year; 两种声明是等价的。
+最后，signed 和 unsigned 也可以被单独用来表示简单类型，意思分别同signed int 和 unsigned int 相同，即以下两种声明互相等同：
+unsigned MyBirthYear;
+unsigned int MyBirthYear;
+下面我们就用C++代码来解决在这一节开头提到的记忆问题，来看一下变量定义是如何在程序中起作用的。
+// operating with variables
+
+#include <iostream.h>
+using namespace std;
+
+int main ()
+{
+    // declaring variables:
+    int a, b;
+    int result;
+
+    // process:
+    a = 5;
+    b = 2;
+    a = a + 1;
+    result = a - b;
+
+    // print out the result:
+    cout << result;
+
+    // terminate the program:
+    return 0;
+}
+
+4
+如果以上程序中变量声明部分有你不熟悉的地方，不用担心，我们在后面的章节中很快会学到这些内容。
+
+变量的范围（Scope of variables）
+所有我们要使用的变量都必须事先声明过。Ｃ和Ｃ++语言的一个重要区别是，在C++语言中我们可以在源程序中任何地方声明变量，甚至可以在两个可执行(excutable)语句的中间声明变量，而不象在C语言中变量声明只能在程序的开头部分。
+然而，我们还是建议在一定程度上遵循C语言的习惯来声明变量，因为将变量声明放在一处对debug程序有好处。因此，传统的C语言方式的变量声明就是把变量声明放在每一个函数(function)的开头（对本地变量local variable）或直接放在程序开头所有函数(function)的外面（对全局变量global variable）。
+一个变量可以是本地(local)范围内有效，叫做本地变量，也可以是全局(global)范围内有效，叫做全局变量。全局变量要定义在一个源码文件的主体中，所有函数(包括主函数main()）之外。而本地变量定义在一个函数甚至只是一个语句块单元中。如下图所示：
+全局变量Global variables 可以在程序中任何地方任何函数（function）中被引用，只要是在变量的声明之后。
+本地变量local variables 的作用范围被局限在声明它的程序范围内。如果它们是在一个函数的开头被声明的（例如main函数），它们的作用范围就是整个main函数。在左图的例子中，这就意味着如果在main函数外还另有一个函数，main函数中声明的本地变量(Age, ANumber, AnotherOne) 不能够被另一个函数使用，反之亦然。
+在C++中，本地变量(local variable)的作用范围被定义在声明它的程序块内（一个程序块是被一对花括号（curly brackets{}）括起来的一组语句）。如果变量是在一个函数(function)中被声明的，那么它是一个函数范围内的变量，如果变量是在一个循环中(loop)中被声明的，那么它的作用范围只是在这个循环(loop)之中，以此类推。
+除本地和全局范围外，还有一种外部范围，它使得一个变量不仅在同一源程序文件中可见，而且在其他所有将被链接在一起的源文件中均可见。
+
+变量初始化（Initialization of variables）
+当一个本地变量( local variable)被声明时，它的值默认为未定(undetermined)。但你可能希望在声明变量的同时赋给它一个具体的值。要想达到这个目的，需要对变量进行初始化。C++中有两种初始化方法：
+第一种，又叫做类C (c-like) 方法，是在声明变量的时候加上一个等于号，并在后面跟上想要的数值：
+type identifier = initial_value ;
+例如，如果我们想声明一个叫做a的int变量并同时赋予它0这个值，我们可以这样写：
+int a = 0;
+另外一种变量初始化的方法，又叫做构造函数(constructor)初始化， 是将初始值用小括号（parenthesis ()）括起来:
+type identifier (initial_value) ;
+例如：
+int a (0);
+在C++.中以上两种方法都正确并且两者等同 。
+// 变量初始化
+
+#include <iostream>
+using namespace std;
+
+int main ()
+{
+    int a=5;    // 初始值为 5
+    int b(2);   // 初始值为 2
+    int result; // 不确定初始值
+
+    a = a + 3;
+    result = a - b;
+    cout << result;
+
+    return 0;
+}
+
+6
+
+字符串 （strings)
+字符串是用来存储一个以上字符的非数字值的变量。
+C++提供一个string类来支持字符串的操作，它不是一个基本的数据类型，但是在一般的使用中与基本数据类型非常相似。
+与普通数据类型不同的一点是，要想声明和使用字符串类型的变量，需要引用头文件<string>，并且使用using namespace语句来使用标准名空间（std)，如下面例子所示：
+// C++字符串例题
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main ()
+{
+    string mystring = "This is a string";
+    cout << mystring;
+    return 0;
+}
+
+This is a string
+如上面例子所示，字符串变量可以被初始化为任何字符串值，就像数字类型变量可以被初始化为任何数字值一样。
+以下两种初始化格式对字符串变量都是可以使用的：
+string mystring = "This is a string";
+string mystring ("This is a string");
+字符串变量还可以进行其他与基本数据类型变量一样的操作，比如声明的时候不指定初始值，和在运行过程中被重新赋值。
+// C++字符串例题2
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main ()
+{
+    string mystring;
+    mystring =
+    "This is the initial string content";
+    cout << mystring << endl;
+    mystring =
+    "This is a different string content";
+    cout << mystring << endl;
+    return 0;
+}
+This is the initial string content
+This is a different string content
+要了解更加详细的C++字符串操作，建议参考Cplusplus上的string类reference。
+1.3 常量 （Constants ）
+一个常量（constant）是一个有固定值的表达式。
+
+字（Literals）
+字是用来在程序源码中表达特定的值。在前面的内容中我们已经用了很多的字来给变量赋予特定的值。例如：
+a = 5;
+
+这句代码中5就是一个字常量。
+字常量(literal constant)可以被分为整数(Integer Numbers), 浮点数(Floating-Point Numbers)，字符(Characters)和字符串(Strings)。
+
+整数(Integer Numbers)
+1776
+707
+-273
+他们是整型常数，表示十进制整数值。注意表示整型常数时我们不需要些引号（quotes (")）或任何特殊字符。毫无疑问它是个常量：任何时候当我们在程序中写1776，我们指的就是1776这个数值。
+除十进制整数另外， C++还允许使用八进制（octal numbers）和十六进制（hexadecimal numbers）的字常量（literal constants）。如果我们想要表示一个八进制数，我们必须在它前面加上一个0字符(zero character)，而表示十六进制数我们需要在它前面加字符0x (zero, x)。例如以下字常量（literal constants）互相等值：
+75     // 十进制 decimal
+0113 // 八进制 octal
+0x4b // 十六进制 hexadecimal
+所有这些都表示同一个整数： 75 (seventy five) ，分别以十进制数，八进制数和十六进制数表示。
+像变量一样，常量也是有数据类型的。默认的整数字常量的类型为int型。我们可以通过在后面加字母u或l来迫使它为无符号(unsigned)的类型或长整型(long)。
+75         // int
+75u        // unsigned int
+75l        // long
+75ul       // unsigned long
+
+这里后缀ｕ和ｌ可以是大写，也可以是小写。
+
+浮点数(Floating Point Numbers)
+浮点数以小数（decimals）和／或指数幂（ exponents）的形式表示。它们可以包括一个小数点，一个e字符（表示"by ten at the Xth height"，这里X是后面跟的整数值) ，或两者都包括。
+3.14159 // 3.14159
+6.02e23 // 6.02 x 10^1023
+1.6e-19 // 1.6 x 10^-19
+3.0     // 3.0
+以上是包含小数的以Ｃ++表示的４个有效数值。第一个是PI，第二个是Avogadro数之一，第三个是一个电子（electron）的电量（electric charge）(一个极小的数值) – 所有这些都是近似值。最后一个是浮点数字常量表示数3。
+浮点数的默认数据类型为double。如果你想使用float或long double类型，可以在后面加f或l后缀，同样大小写都可以：
+3.14159L   // long double
+6.02e23f   // float
+
+字符和字符串（Characters and strings）
+此外还有非数字常量，例如：
+'z'
+'p'
+"Hello world"
+"How do you do?"
+前两个表达式表示单独的字符（character），后面两个表示由若干字符组成的字符串(string) 。注意在表示单独字符的时候，我们用单引号（single quotes (')），在表示字符串或多于一个字符的时候我们用双引号（double quotes (")）。
+当以常量方式表示单个字符和字符串时，必须写上引号以便把他们和可能的变量标识或保留字区分开，注意以下例子：
+x
+'x'
+x 指一个变量名称为 x, 而'x'指字符常量'x'。
+字符常量和字符串常量各有特点，例如escape codes，这些是除此之外无法在源程序中表示的特殊的字符，例如换行符 newline (\n) 或跳跃符tab (\t)。所有这些符号前面要加一个反斜杠inverted slash (\)。这里列出了这些escape codes：
+\n	换行符newline
+\r	回车carriage return
+\t	跳跃符tabulation
+\v	垂直跳跃vertical tabulation
+\b	backspace
+\f	page feed
+\a	警告alert (beep)
+\'	单引号single quotes (')
+\"	双引号double quotes (")
+\?	问号question (?)
+\\	反斜杠inverted slash (\)
+例如：
+'\n'
+'\t'
+"Left \t Right"
+"one\ntwo\nthree"
+另外你可以数字ASCII 码表示一个字符，这种表示方式是在反斜杠(\)之后加以8进制数或十六进制数表示的ASCII 码。在第一种（八进制octal）表示中，数字必需紧跟反斜杠(例如\23或\40)，第二种(十六进制hexacedimal)，必须在数字之前写一个x字符(例如\x20或\x4A)。
+如果每一行代码以反斜杠inverted slash (\)结束，字符串常量可以分多行代码表示：
+"string expressed in \
+two lines"
+你还可以将多个被空格blankspace、跳跃符tabulator、换行符newline或其他有效空白符号分隔开的字符串常量连接在一起：
+"we form" "a single" "string" "of characters"
+最后如果我们想让字符串使用宽字符（wchar_t)，而不是窄字符(char)，可以在常量的前面加前缀L：
+L"This is a wide character string"
+宽字符通常用来存储非英语字符，比如中文字符，一个字符占两个字节。
+布尔型常量(Boolean Literals)
+布尔型只有两个有效的值：true和false，其数据类型为bool。
+
+定义常量Defined constants (#define)
+使用预处理器指令#define，你可以将那些你经常使用的常量定义为你自己取的名字而不需要借助于变量。它的格式是：
+#define identifier value
+例如：
+#define PI 3.14159265
+#define NEWLINE '\n'
+#define WIDTH 100
+以上定义了三个常量。一旦做了这些声明，你可以在后面的程序中使用这些常量，就像使用其它任何常量一样，例如：
+circle = 2 * PI * r;
+cout << NEWLINE;
+实际上编译器在遇到#define指令的时候做的只是把任何出现这些 常量名（在前面的例子中为PI, NEWLINE或WIDTH）的地方替换成他们被定义为的代码（分别为3.14159265, '\n'和100）。因此，由#define定义的常量被称为宏常量macro constants。
+#define 指令不是代码语句，它是预处理器指令，因此指令行末尾不需要加分号semicolon (;) 。如果你在宏定义行末尾加了分号(;) ，当预处理器在程序中做常量替换的时候，分号也会被加到被替换的行中，这样可能导致错误。
+
+声明常量declared constants (const)
+通过使用const前缀，你可以定义指定类型的常量，就像定义一个变量一样:
+const int width = 100;
+const char tab = '\t';
+const zip = 12440;
+如果没有指定类型(如上面最后例子中最后一行)，编译器会假设常量为整型int。
+1.4 操作符/运算符（Operators）
+前面已经学习了变量和常量，我们可以开始对它们进行操作，这就要用到C++的操作符。有些语言，很多操作符都是一些关键字， 比如add, equals等等。C++的操作符主要是由符号组成的。这些符号不在字母表中，但是在所有键盘上都可以找到。这个特点使得C++程序更简洁，也更国际化。运算符是C++语言的基础，所以非常重要。
+你不需要背下所有这一小节的内容，这些细节知识仅供你以后需要时参考 。
+赋值Assignation (=)
+赋值运算符的功能是将一个值赋给一个变量。
+a = 5;
+将整数5赋给变量a。= 运算符左边的部分叫做lvalue (left value)，右边的部分叫做rvalue (right value)。lvalue 必须是一个变量，而右边的部分可以是一个常量，一个变量，一个运算(operation)的结果或是前面几项的任意组合。
+有必要强调赋值运算符永远是将右边的值赋给左边，永远不会反过来。
+a = b;
+将变量b (rvalue)的值赋给变量a (lvalue)，不论a当时存储的是什么值。同时考虑到我们只是将b的数值赋给a，以后如果b的值改变了并不会影响到a的值.
+例如：如果我们使用以下代码(变量值的变化显示在绿色注释部分):
+// 赋值符号例子
+
+#include <iostream>
+using namespace std;
+
+int main ()
+{
+    int a, b;         // a:?,  b:?
+    a = 10;           // a:10, b:?
+    b = 4;            // a:10, b:4
+    a = b;            // a:4,  b:4
+    b = 7;            // a:4,  b:7
+
+    cout << "a:";
+    cout << a;
+    cout << " b:";
+    cout << b;
+
+    return 0;
+}
+a:4 b:7
+以上代码结果是a的值为4， b的值为7。最后一行中b的值被改变并不会影响到a，虽然在此之前我们声明了a = b; (从右到左规则right-to-left rule)。
+C++拥有而其他语言没有的一个特性是赋值符 (=) 可以被用作另一个赋值符的rvalue (或rvalue的一部分) 。例如：
+a = 2 + (b = 5);
+等同于：
+b = 5;
+a = 2 + b;
+它的意思是：先将5赋给变量b，然后把前面对b的赋值运算的结果（即5）加上2再赋给变量a，这样最后a中的值为7。因此，下面的表达式在C++中也是正确的：
+a = b = c = 5; //将5同时赋给3个变量a, b和c。
+
+数学运算符Arithmetic operators ( +, -, *, /, % )
+C++语言支持的5种数学运算符为：
+?	+ 加addition
+?	- 减subtraction
+?	* 乘multiplication
+?	/ 除division
+?	% 取模module
+加减乘除运算想必大家都很了解，它们和一般的数学运算符没有区别。
+唯一你可能不太熟悉的是用百分号(%)表示的取模运算（module）。取模运算是取两个整数相除的余数。例如，如果我们写a = 11 % 3;，变量a的值将会为结果2，因为2是11除以3的余数。
+
+组合运算符Compound assignation operators (+=, -=, *=, /=, %=, >>=, <<=, &=, ^=, |=)
+C++以书写简练著称的一大特色就是这些组合运算符compound assignation operators (+=, -=, *= 和 /= 及其他) ，这些运算符使得只用一个基本运算符就可改写变量的值：
+value += increase; 等同于 value = value + increase;
+a -= 5; 等同于 a = a - 5;
+a /= b; 等同于 a = a / b;
+price *= units + 1; 等同于 price = price * (units + 1);
+其他运算符以此类推。例如：
+// 组合运算符例子
+
+#include <iostream>
+using namespace std;
+
+int main ()
+{
+    int a, b=3;
+    a = b;
+    a+=2;             // 相当于 a=a+2
+    cout << a;
+    return 0;
+}
+
+5
+
+递增和递减Increase and decrease
+书写简练的另一个例子是递增（increase）运算符 (++)和递减（decrease） 运算符(--)。它们使得变量中存储的值加1或减1。它们分别等同于+=1和-=1。因此：
+a++;
+a+=1;
+a=a+1;
+在功能上全部等同，即全部使得变量a的值加1。
+它的存在是因为最早的C编译器将以上三种表达式的编译成不同的机器代码，不同的机器代码运行速度不一样。现在，编译器已经基本自动实行代码优化，所以以上三种不同的表达方式编译成的机器代码在实际运行上已基本相同。
+这个运算符的一个特点是它既可以被用作prefix前缀，也可以被用作后缀suffix，也就是说它既可以被写在变量标识的前面(++a)，也可以被写在后面(a++)。虽然在简单表达式如a++或++a中，这两种写法代表同样的意思，但当递增increase或递减decrease的运算结果被直接用在其它的运算式中时，它们就代表非常不同的意思了：当递增运算符被用作前缀prefix (++a) 时，变量a的值线增加，然后再计算整个表达式的值，因此增加后的值被用在了表达式的计算中；当它被用作后缀suffix (a++)时，变量a的值在表达式计算后才增加，因此a在增加前所存储的值被用在了表达式的计算中。注意以下两个例子的不同：
+例 1 	例 2
+B=3;
+A=++B;
+// A 的值为 4, B 的值为 4 	B=3;
+A=B++;
+// A 的值为 3, B 的值为 4
+在第一个例子中，B在它的值被赋给A之前增加1。而在第二个例子中B原来的值3被赋给 A然后B的值才加1变为4。
+
+关系运算符Relational operators ( ==, !=, >, <, >=, <= )
+我们用关系运算符来比较两个表达式。如ANSI-C++ 标准中指出的，关系预算的结果是一个bool值，根据运算结果的不同，它的值只能是真true或false。
+例如我们想通过比较两个表达式来看它们是否相等或一个值是否比另一个的值大。以下为C++的关系运算符：
+==	相等Equal
+!=	不等Different
+> 	大于Greater than
+< 	小于Less than
+>= 	大于等于Greater or equal than
+<=	小于等于Less or equal than
+下面你可以看到一些实际的例子：
+(7 == 5)	将返回false.
+(5 > 4)	将返回true.
+(3 != 2)	将返回true.
+(6 >= 6)	将返回true.
+(5 < 5)	将返回false.
+当然，除了使用数字常量，我们也可以使用任何有效表达式，包括变量。假设有a=2, b=3和c=6,
+(a == 5)	将返回false.
+
+(a*b >= c)	将返回true 因为它实际是(2*3 >= 6)
+
+(b+4 > a*c)	将返回false因为它实际是(3+4 > 2*6)
+
+((b=2) == a)	将返回true.
+注意:运算符= (单个等号)不同于运算符== (双等号)。第一个是赋值运算符(将等号右边的表达式值赋给左边的变量)；第二个(==)是一个判断等于的关系运算符，用来判断运算符两边的表达式是否相等。因此在上面例子中最后一个表达式((b=2) == a)，我们首先将数值2赋给变量b，然后把它和变量a进行比较。因为变量a中存储的也是数值2，所以整个运算的结果为true。
+在ANSI-C++标准出现之前的许多编译器中，就像C语言中，关系运算并不返回值为真true或假false的bool值，而是返回一个整型数值最为结果，它的数值可以为0，代表"false"或一个非0数值(通常为1)来代表"true"。
+
+逻辑运算符Logic operators ( !, &&, || )
+运算符 ! 等同于boolean 运算NOT （取非），它只有一个操作数(operand)，写在它的右边。它做的唯一工作就是取该操作数的反面值，也就是说如果操作数值为真true，那么运算后值变为假false，如果操作数值为假false，则运算结果为真true。它就好像是说取与操作数相反的值。例如：
+!(5 == 5)	返回false，因为它右边的表达式(5 == 5)为真true.
+!(6 <= 4)	返回true因为(6 <= 4)为假false.
+!true	返回假false.
+!false 	返回真true.
+逻辑运算符&&和||是用来计算两个表达式而获得一个结果值。它们分别对应逻辑运算中的与运算AND 和或运算OR。它们的运算结果取决于两个操作数（operand）的关系：
+第一个操作数
+a	第二个操作数
+b 	结果
+a && b	结果
+a || b
+true	true	true	true
+true	false	false	true
+false	true	false	true
+false	false	false	false
+例如 ：
+( (5 == 5) && (3 > 6) ) 返回false ( true && false ).
+( (5 == 5) || (3 > 6)) 返回true ( true || false ).
+
+条件运算符Conditional operator ( ? )
+条件运算符计算一个表达式的值并根据表达式的计算结果为真true或假false而返回不同值。它的格式是：
+condition ? result1 : result2 （条件？返回值1：返回值2）
+如果条件condition 为真true，整个表达式将返回esult1，否则将返回result2。
+7==5 ? 4 : 3	返回3，因为7不等于5.
+7==5+2 ? 4 : 3	返回4，因为7等于5+2.
+5>3 ? a : b	返回a，因为5大于3.
+a>b ? a : b	返回较大值，a 或b.
+
+// 条件运算符例子
+
+#include <iostream>
+using namespace std;
+
+int main ()
+{
+    int a,b,c;
+
+    a=2;
+    b=7;
+    c = (a>b) ? a : b;
+
+    cout << c;
+
+    return 0;
+}
+7
+上面的例子中a的值为2，b的值为7，所以表达式(a>b)运算值为假(false)，所以整个表达式(a>b)?a:b要取分号后面的值，也就是b的值7。因此最后输出 c 的值为7。
+
+逗号运算符 ( , )
+逗号运算符 (,) 用来分开多个表达式，并只取最右边的表达式的值返回。
+
+例如有以下代码：
+a = (b=3, b+2);
+
+这行代码首先将3赋值给变量b，然后将 b+2 赋值给变量 a。所以最后变量a 的值为5，而变量b的值为3。
+位运算符Bitwise Operators ( &, |, ^, ~, <<, >> )
+位运算符以比特位改写变量存储的数值，也就是改写变量值的二进制表示：
+op	asm	Description
+&	AND 	逻辑与 Logic AND
+| 	OR	逻辑或Logic OR
+^ 	XOR	逻辑异或Logical exclusive OR
+~ 	NOT	对1取补（位反转）Complement to one (bit inversion)
+<< 	SHL	左移Shift Left
+>> 	SHR	右移Shift Right
+
+变量类型转换运算符Explicit type casting operators
+变量类型转换运算符可以将一种类型的数据转换为另一种类型的数据。在写C++中有几种方法可以实现这种操作，最常用的一种，也是与C兼容的一种，是在原转换的表达式前面加用括号()括起的新数据类型：
+int i;
+float f = 3.14;
+i = (int) f;
+以上代码将浮点型数字3.14转换成一个整数值(3)。这里类型转换操作符为(int)。在C++中实现这一操作的另一种方法是使用构造函数constructor 的形式：在要转换的表达式前加变量类型并将表达式括在括号中：
+i = int ( f );
+以上两种类型转换的方法在C++中都是合法的。另外ANSI-C++针对面向对象编程（object oriented programming）增加了新的类型转换操作符 (参考Section 5.4, Advanced class type-casting).
+
+sizeof()
+这个运算符接受一个输入参数，该参数可以是一个变量类型或一个变量自己，返回该变量类型(variable type) 或对象(object)所占的字节数：
+a = sizeof (char);
+这将会返回1给a，因为char是一个常为1个字节的变量类型。
+sizeof返回的值是一个常数，因此它总是在程序执行前就被固定了。
+
+其它运算符
+在本教程后面的章节里我们将看到更多的运算符，比如指向指针的运算或面向对象编程特有的运算，等等，我们会在它们各自的章节里进行详细讨论。
+
+运算符的优先度 Precedence of operators
+当多个操作数组成复杂的表达式时，我们可能会疑惑哪个运算先被计算，哪个后被计算。例如以下表达式：
+a = 5 + 7 % 2
+我们可以怀疑它实际上表示：
+a = 5 + (7 % 2) 结果为6，还是 a = (5 + 7) % 2 结果为0?
+正确答案为第一个，结果为6。每一个运算符有一个固定的优先级，不仅对数学运算符（我们可能在学习数学的时候已经很了解它们的优先顺序了），所有在C++中出现的运算符都有优先级。从最从最高级到最低级，运算的优先级按下表排列：
+优先级
+Level	操作符
+Operator	说明
+Description	结合方向
+Grouping
+1	::	范围	从左到右
+2	() [] . -> ++ -- dynamic_cast static_cast reinterpret_cast const_cast typeid	后缀	从左到右
+3	++ -- ~ ! sizeof new delete	一元(前缀)	从右到左
+* &	指针和取地址
++ -	一元符号
+4	(type)	类型转换 	从右到左
+5	.* ->*	指向成员的指针	从左到右
+6	* / %	乘、除、取模 	从左到右
+7	+ -	加减	从左到右
+8	<< >>	位移	从左到右
+9	< > <= >=	关系操作符	从左到右
+10	== !=	等于、不等于	从左到右
+11	&	按位与运算	从左到右
+12	^	按位异或运算	从左到右
+13	|	按位或运算	从左到右
+14	&&	逻辑与运算	从左到右
+15	||	逻辑或运算	从左到右
+16	?:	条件运算	从右到左
+17	= *= /= %= += -= >>= <<= &= ^= |=	赋值运算	从右到左
+18	,	逗号	从左到右
+
+结合方向Grouping定义了当有同优先级的多个运算符在一起时，哪一个必须被首先运算，最右边的还是最左边的。
+所有这些运算符的优先级顺序可以通过使用括号parenthesis signs (和)来控制，而且更易读懂，例如以下例子：
+a = 5 + 7 % 2;
+根据我们想要实现的计算的不同，可以写成：
+a = 5 + (7 % 2); 或者
+a = (5 + 7) % 2;
+所以如果你想写一个复杂的表达式而不敢肯定各个运算的执行顺序，那么就加上括号。这样还可以使代码更易读懂。
+1.5 控制台交互(Communication through console)
+控制台(console)是电脑的最基本交互接口，通常包括键盘(keyboard)和屏幕(screen)。键盘通常为标准输入设备，而 屏幕为标准输出设备。
+在C++的iostream函数库中，一个程序的标准输入输出操作依靠两种数据流：cin 给输入使用和cout给输出使用。另外，cerr和clog也已经被实现――它们是两种特殊设计的数据流专门用来显示出错信息。它们可以被重新定向到标准输出设备或到一个日志文件（log file）。
+因此cout (标准输出流)通常被定向到屏幕，而cin (标准输入流)通常被定向到键盘。
+通过控制这两种数据流，你可以在程序中与用户交互，因为你可以在屏幕上显示输出并从键盘接收用户的输入。
+
+输出Output (cout)
+输出流cout与重载(overloaded)运算符<<一起使用：
+cout << "Output sentence"; // 打印Output sentence到屏幕上
+cout << 120; // 打印数字 120 到屏幕上
+cout << x; // 打印变量 x 的值到屏幕上
+运算符<<又叫插入运算符(insertion operator) 因为它将后面所跟的数据插入到它前面的数据流中。在以上的例子中，字符串常量Output sentence，数字常量120和变量x先后被插入输出流cout中。注意第一句中字符串常量是被双引号引起来的。每当我们使用字符串常量的时候，必须用引号把字符串引起来，以便将它和变量名明显的区分开来。例如，下面两个语句是不同的：
+cout << "Hello"; // 打印字符串Hello到屏幕上
+cout << Hello; // 把变量Hello存储的内容打印到屏幕上
+插入运算符insertion operator (<<)可以在同一语句中被多次使用：
+cout << "Hello, " << "I am " << "a C++ sentence";
+上面这一行语句将会打印 Hello, I am a C++ sentence 到屏幕上。插入运算符(<<) 的重复使用在我们想要打印变量和内容的组合内容或多个变量时有所体现：
+cout << "Hello, I am " << age << " years old and my zipcode is " << zipcode;
+如果我们假设变量age的值为24，变量zipcode的值为90064，以上句子的输出将为： Hello, I am 24 years old and my zipcode is 90064
+必须注意，除非我们明确指定，cout并不会自动在其输出内容的末尾加换行符，因此下面的语句：
+cout << "This is a sentence.";
+cout << "This is another sentence.";
+将会有如下内容输出到屏幕：
+This is a sentence.This is another sentence.
+虽然我们分别调用了两次cout，两个句子还是被输出在同一行。所以，为了在输出中换行，我们必须插入一个换行符来明确表达这一要求。在C++中换行符可以写作\n:
+cout << "First sentence.\n ";
+cout << "Second sentence.\nThird sentence.";
+将会产生如下输出：
+First sentence.
+Second sentence.
+Third sentence.
+另外，你也可以用操作符endl来换行，例如：
+cout << "First sentence." << endl;
+cout << "Second sentence." << endl;
+将会输出：
+First sentence.
+Second sentence.
+当操作符endl被用在buffered streams中时有一点特殊：它们被flushed。不过cout 默认为unbuffered，所以不会被影响。 你可以暂时不管这一点。
+你可以使用\n或endl来指定cout输出换行，请注意前面所讲的两者的不同用法。
+
+输入Input (cin)
+C++中的标准输入是通过在cin数据流上重载运算符extraction (>>) 来实现的。它后面必须跟一个变量以便存储读入的数据。例如：
+int age;
+cin >> age;
+声明一个整型变量age然后等待用户从键盘输入到cin并将输入值存储在这个变量中。
+cin 只能在键盘输入回车键(RETURN)后才能处理前面输入的内容。因此即使你只要求输入一个单独的字符，在用户按下回车键(RETURN)之前cin将不会处理用户的输入的字符。
+在使用cin输入的时候必须考虑后面的变量类型。如果你要求输入一个整数，extraction (>>) 后面必须跟一个整型变量，如果要求一个字符，后面必须跟一个字符型变量，如果要求一个字符串，后面必须跟一个字符串型变量。
+// i/o example
+#include <iostream.h>
+int main ()
+{
+    int i;
+    cout << "Please enter an integer value: ";
+    cin >> i;
+    cout << "The value you entered is " << i;
+    cout << " and its double is " << i*2 << ".\n";
+    return 0;
+}
+
+Please enter an integer value: 702
+The value you entered is 702 and its double is 1404.
+使用程序的用户可以使引起错误的原因之一，即使是在最简单的需要用cin做输入的程序中（就像我们上面看到的这个程序）。因为如果你要求输入一个整数数值，而用户输入了一个名字（一个字符串），其结果可能导致程序产生错误操作，因为它不是我们期望从用户处获得的数据。当你使用由cin 输入的数据的时候，你不得不假设程序的用户将会完全合作而不会在程序要求输入整数的时候输入他的名字。后面当我们看到怎样使用字符串的时候，我们将会同时看到一些解决这一类出错问题的办法。
+你也可以利用cin 要求用户输入多个数据 ：
+cin >> a >> b;
+等同于：
+cin >> a;
+cin >> b;
+在以上两种情况下用户都必须输入两个数据，一个给变量a，一个给变量b。输入时两个变量之间可以以任何有效的空白符号间隔，包括空格，跳跃符tab或换行。
+
+cin和字符串
+我们可以像读取基本类型数据一样，使用cin和>>操作符来读取字符串，例如：
+cin >> mystring;
+但是，cin >> 只能读取一个单词，一旦碰到任何空格，读取操作就会停止。在很多时候这并不是我们想要的操作，比如我们希望用户输入一个英文句子，那么这种方法就无法读取完整的句子，因为一定会遇到空格。
+要一次读取一整行输入，需要使用C++的函数 getline，相对于是用cin，我们更建议使用getline来读取用户输入。
+例如：
+// 读取字符串例子
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main ()
+{
+    string mystr;
+    cout << "What's your name? ";
+    getline (cin, mystr);
+    cout << "Hello " << mystr << ".\n";
+    cout << "What is your favorite color? ";
+    getline (cin, mystr);
+    cout << "I like " << mystr << " too!\n";
+    return 0;
+}
+
+What's your name? Aqua
+Hello Aqua.
+What is your favorite color? blue
+I like blue too!
+你可能注意到在上面的例子中，两次调用 getline 函数我们都是用了同一个字符串变量(mystr)。在第二次调用的时候，程序会自动用第二次输入的内容取代以前的内容。
+
+字符串流　（ｓｔｒｉｎｇｓｔｒｅａｍ）
+标准头文件 <sstream> 定义了一个叫做　stringstream 的类，使用这个类可以对基于字符串的对象进行像流（ｓｔｒｅａｍ）一样的操作。这样，我们可以对字符串进行抽取和插入操作，这对将字符串与数值互相转换非常有用。例如，如果我们想将一个字符串转换为一个整数，可以这样写：
+string mystr ("1204");
+int myint;
+stringstream(mystr) >> myint;
+这个例子中先定义了一个字符串类型的对象mystr，初始值为"1204"，又定义了一个整数变量myint。然后我们使用 stringstream 类的构造函数定义了这个类的对象，并以字符串变量mystr为参数。因为我们可以像使用流一样使用stringstream 的对象，所以我们可以像使用cin那样使用操作符 >> 后面跟一个整数变量来进行提取整数数据。这段代码执行之后变量 myint 存储的是数值 1204 。
+// 字符串流的使用示例
+#include <iostream>
+#include <string>
+#include <sstream>
+using namespace std;
+
+int main ()
+{
+    string mystr;
+    float price=0;
+    int quantity=0;
+
+    cout << "Enter price: ";
+    getline (cin,mystr);
+    stringstream(mystr) >> price;
+    cout << "Enter quantity: ";
+    getline (cin,mystr);
+    stringstream(mystr) >> quantity;
+    cout << "Total price: " << price*quantity << endl;
+    return 0;
+}
+
+Enter price: 22.25
+Enter quantity: 7
+Total price: 155.75
+在这个例子中，我们要求用户输入数值，但不同于从标准输入中直接读取数值，我们使用函数getline从标注输入流cin中读取字符串对象(mystr)，然后再从这个字符串对象中提取数值price和quantity。
+通过使用这种方法，我们可以对用户的输入有更多的控制，因为它将用户输入与对输入的解释分离，只要求用户输入整行的内容，然后再对用户输入的内容进行检验操作。这种做法在用户输入比较集中的程序中是非常推荐使用的。

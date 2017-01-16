@@ -1,0 +1,967 @@
+3.1 数组 （Arrays）
+数组(Arrays) 是在内存中连续存储的一组同种数据类型的元素（变量），每一数组有一个唯一名称，通过在名称后面加索引（index）的方式可以引用它的每一个元素。
+也就是说，例如我们有5个整型数值需要存储，但我们不需要定义5个不同的变量名称，而是用一个数组(array)来存储这5个不同的数值。注意数组中的元素必须是同一数据类型的，在这个例子中为整型（int）。
+例如一个存储5个整数叫做billy的数组可以用下图来表示：
+
+这里每一个空白框代表数组的一个元素，在这个例子中为一个整数值。白框上面的数字0 到4 代表元素的索引(index)。注意无论数组的长度如何，它的第一个元素的索引总是从0开始的。
+同其它的变量一样， 数组必须先被声明然后才能被使用。一种典型的数组声明显示如下：
+type name [elements];
+这里type 是可以使任何一种有效的对象数据类型(object type)，如 int, float...等，name 是一个有效地变量标识(identifier)，而由中括号[]引起来的elements 域指明数组的大小，即可以存储多少个元素。
+因此，要定义上面图中显示的 billy 数组，用一下语句就可以了：
+int billy [5];
+备注：在定义一个数组的时候，中括号[]中的elements 域必须是一个常量数值，因为数组是内存中一块有固定大小的静态空间，编译器必须在编译所有相关指令之前先能够确定要给该数组分配多少内存空间。
+
+初始化数组(Initializing arrays)
+当声明一个本地范围内（在一个函数内）的数组时，除非我们特别指定，否则数组将不会被初始化，因此它的内容在我们将数值存储进去之前是不定的。
+如果我们声明一个全局数组（在所有函数之外），则它的内容将被初始化为所有元素均为0。因此 ，如果全局范围内我们声明：
+int billy [5];
+那么billy 中的每一个元素将会被初始化为0:
+
+另外，我们还可以在声明一个变量的同时把初始值付给数组中的每一个元素，这个赋值用花括号{ }来完成。例如：
+int billy [5] = { 16, 2, 77, 40, 12071 };
+这个声明将生成如下数组：
+
+花括号中我们要初始化的元素数值个数必须和数组声明时方括号[ ]中指定的数组长度相符。例如，在上面例子中数组billy 声明中的长度为5，因此在后面花括号中的初始值也有5个，每个元素一个数值。
+因为这是一种信息的重复，因此C++允许在这种情况下数组[ ]中为空白，而数组的长度将有后面花括号{}中数值的个数来决定，如下例所示。
+int billy [] = { 16, 2, 77, 40, 12071 };
+存取数组中数值（Access to the values of an Array）
+在程序中我们可以读取和修改数组任一元素的数值，就像操作其他普通变量一样。格式如下：
+name[index]
+继续上面的例子，数组billy 有5个元素，其中每一元素都是整型int，我们引用其中每一个元素的名字分别为如下所示：
+
+例如，要把数值75存入数组billy 中第3个元素的语句可以是：
+billy[2] = 75;
+又例如，要把数组billy 中第3个元素的值赋给变量a，我们可以这样写：
+a = billy[2];
+因此，在所有使用中，表达式billy[2]就像任何其他整型变量一样。
+注意数组billy 的第3个元素为billy[2]，因为索引(index)从0开始，第1个元素是billy[0]，第2个元素是billy[1]，因此第3个是 billy[2]。同样的原因，最后一个元素是billy[4]。如果我们写billy[5]，那么是在使用billy的第6个元素，因此会超出数组的长度。
+在C++ 中对数组使用超出范围的index是合法的，这就会产生问题，因为它不会产生编译错误而不易被察觉，但是在运行时会产生意想不到的结果，甚至导致严重运行错误。超出范围的index 之所以合法的原因我们在后面学习指针(pointer)的时候会了解。
+学到这里，我们必须能够清楚的了解方括号[ ]在对数组操作中的两种不同用法。它们完成两种任务：一种是在声明数组的时候定义数组的长度；另一种是在引用具体的数组元素的时候指明一个索引号(index)。我们要注意不要把这两种用法混淆。
+int billy[5]; // 声明新数组(以数据类型名称开头)
+billy[2] = 75; // 存储数组的一个元素
+其它合法的数组操作：
+billy[0] = a; // a为一个整型变量
+billy[a] = 75;
+b = billy [a+2];
+billy[billy[a]] = billy[2] + 5;
+
+// arrays example
+#include <iostream.h>
+
+int billy [ ] = {16, 2, 77, 40, 12071};
+int n, result=0;
+
+int main () {
+    for ( n=0 ; n<5 ; n++ ) {
+        result += billy[n];
+    }
+
+    cout << result;
+    return 0;
+}
+
+12206
+
+多维数组（Multidimensional Arrays）
+多维数组(Multidimensional Arrays)可以被描述为数组的数组。例如，一个2维数组(bidimensional array)可以被想象成一个有同一数据类型的2维表格。
+
+jimmy 显示了一个整型(int )的3x5二维数组，声明这一数组的的方式是：
+int jimmy [3][5];
+而引用这一数组中第2列第4排元素的表达式为：jimmy[1][3]
+
+(记住数组的索引总是从0开始)。
+多维数组(Multidimensional arrays)并不局限于2维。如果需要，它可以有任意多维，虽然需要3维以上的时候并不多。但是考虑一下一个有很多维的数组所需要的内存空间，例如：
+char century [100][365][24][60][60];
+给一个世纪中的每一秒赋一个字符(char)，那么就是多于30亿的字符！如果我们定义这样一个数组，需要消耗3000M的内存。
+多维数组只是一个抽象的概念，因为我们只需要把各个索引的乘积放入一个简单的数组中就可以获得同样的结果。例如：
+int jimmy [3][5]; 效果上等价于
+int jimmy [15]; (3 * 5 = 15)
+唯一的区别是编译器帮我们记住每一个想象中的维度的深度。下面的例子中我们就可以看到，两段代码一个使用2维数组，另一个使用简单数组，都获得同样的结果，即都在内存中开辟了一块叫做jimmy的空间，这个空间有15个连续地址位置，程序结束后都在相同的位置上存储了相同的数值，如后面图中所示：
+// multidimensional array
+#include <iostream.h>
+#define WIDTH 5
+#define HEIGHT 3
+
+int jimmy [HEIGHT][WIDTH];
+int n,m;
+
+int main (){
+    for (n=0; n<HEIGHT; n++) {
+        for (m=0; m<WIDTH; m++)
+            jimmy[n][m]=(n+1)*(m+1);
+    }
+    return 0;
+}
+
+// pseudo-multidimensional array
+
+
+#include <iostream.h>
+#define WIDTH 5
+#define HEIGHT 3
+
+int jimmy [HEIGHT * WIDTH];
+int n,m;
+
+int main (){
+    for (n=0; n<HEIGHT; n++){
+        for (m=0; m<WIDTH; m++)
+            jimmy[n * WIDTH + m]=(n+1)*(m+1);
+    }
+    return 0;
+}
+上面两段代码并不向屏幕输出，但都向内存中的叫做jimmy的内存块存入如下数值：
+
+我们用了宏定义常量(#define)来简化未来可能出现的程序修改，例如，如果我们决定将数组的纵向由3扩大到4，只需要将代码行：
+#define HEIGHT 3
+修改为 ：
+#define HEIGHT 4
+而不需要对程序的其他部分作任何修改。
+
+数组参数（Arrays as parameters）
+有时候我们需要将数组作为参数传给函数。在C++ 中将一整块内存中的数值作为参数完整的传递给一个函数是不可能的，即使是一个规整的数组也不可能，但是允许传递它的地址。它们的实际作用是一样的，但传递地址更快速有效。
+要定义数组为参数，我们只需要在声明函数的时候指明参数数组的基本数据类型，一个标识后面再跟一对空括号[]就可以了。例如以下的函数：
+void procedure (int arg[])
+接受一个叫做arg的整型数组为参数。为了给这个函数传递一个按如下定义的数组：
+int myarray [40];
+其调用方式可写为：
+procedure (myarray);
+下面我们来看一个完整的例子:
+// arrays as parameters
+#include <iostream.h>
+
+void printarray (int arg[ ], int length) {
+    for (int n=0; n<length; n++) {
+        cout << arg[n] << " ";
+    }
+    cout << "\n";
+}
+
+int main () {
+    int firstarray[ ] = {5, 10, 15};
+    int secondarray[ ] = {2, 4, 6, 8, 10};
+    printarray (firstarray,3);
+    printarray (secondarray,5);
+    return 0;
+}
+
+5 10 15
+2 4 6 8 10
+可以看到，函数的第一个参数(int arg[ ])接受任何整型数组为参数，不管其长度如何。因此，我们用了第2个参数来告知函数我们传给它的第一个参数数组的长度。这样函数中打印数组内容的for 循环才能知道需要检查的数组范围。
+在函数的声明中也包含多维数组参数。定义一个3维数组 (tridimensional array) 的形式是：
+base_type[ ][depth][depth]
+例如，一个函数包含多维数组参数的函数可以定义为：
+void procedure (int myarray[ ][3][4])
+注意第一对括号[ ]中为空，而后面两对不为空。这是必须的，因为编译器必须能够在函数中确定每一个增加的维度的深度。
+数组作为函数的参数，不管是多维数组还是简单数组，都是初级程序员容易出错的地方。建议阅读章节3.3, 指针(Pointers)，以便更好的理解数组(arrays)是如何操作的。
+
+3.2 字符序列 （Character Sequences）
+前面基础知识部分讲C++变量类型的时候，我们已经提到过C++的标准函数库提供了一个string类来支持对字符串的操作。然而，字符串实际就是一串连续的字符序列，所以我们也可以用简单的字符数组来表示它。
+例如，下面这个数组:
+char jenny [20];
+是一个可以存储最多20个字符类型数据的数组。你可以把它想象成：
+
+理论上这数组可以存储长度为20的字符序列，但是它也可以存储比这短的字符序列，而且实际中常常如此。例如，jenny 在程序的某一点可以只存储字符串"Hello" 或者"Merry christmas"。因此，既然字符数组经常被用于存储短于其总长的字符串，就形成了一种习惯在字符串的有效内容的结尾处加一个空字符(null character)来表示字符结束，它的常量表示可写为0 或'\0'。
+我们可以用下图表示jenny (一个长度为20的字符数组) 存储字符串"Hello" 和"Merry Christmas" ：
+
+注意在有效内容结尾是如何用空字符null character ('\0')来表示字符串结束的。 后面灰色的空格表示不确定数值。
+
+初始化以空字符结束的字符序列(Initialization of null-terminated character sequences)
+因为字符数组其实就是普通数组，它与数组遵守同样的规则。例如，如果我们想将数组初始化为指定数值，我们可以像初始化其它数组一样用：
+char mystring[] = { 'H', 'e', 'l', 'l', 'o', '\0' };
+在这里我们定义了一个有6个元素的字符数组，并将它初始化为字符串Hello 加一个空字符（null character '\0'）。
+除此之外，字符串还有另一个方法来进行初始化：用字符串常量。
+在前几章的例子中，字符串常量已经出现过多次，它们是由双引号引起来的一组字符来表示的，例如：
+"the result is: "
+是一个字符串常量，我们在前面的例子中已经使用过。
+与表示单个字符常量的单引号(')不同，双引号 (")是表示一串连续字符的常量。由双引号引起来的字符串末尾总是会被自动加上一个空字符 ('\0') 。
+因此，我们可以用下面两种方法的任何一种来初始化字符串mystring：
+char mystring [ ] = { 'H', 'e', 'l', 'l', 'o', '\0' };
+char mystring [ ] = "Hello";
+在两种情况下字符串或数组mystring都被定义为6个字符长(元素类型为字符char)：组成Hello的5个字符加上最后的空字符('\0')。在第二种用双引号的情况下，空字符('\0')是被自动加上的。
+注意：同时给数组赋多个值只有在数组初始化时，也就是在声明数组时，才是合法的。象下面代码现实的表达式都是错误的：
+mystring = "Hello";
+mystring[ ] = "Hello";
+mystring = { 'H', 'e', 'l', 'l', 'o', '\0' };
+因此记住：我们只有在数组初始化时才能够同时赋多个值给它。其原因在学习了指针（pointer）之后会比较容易理解，因为那时你会看到一个数组其实只是一个指向被分配的内存块的常量指针（constant pointer），数组自己不能够被赋予任何数值，但我们可以给数组中的每一个元素赋值。
+在数组初始化的时候是特殊情况，因为它不是一个赋值，虽然同样使用了等号(=) 。不管怎样，牢记前面标下画线的规则。
+
+给字符序列的赋值
+因为赋值运算的lvalue 只能是数组的一个元素，而不能使整个数组，所以，用以下方式将一个字符串赋给一个字符数组是合法的：
+mystring[0] = 'H';
+mystring[1] = 'e';
+mystring[2] = 'l';
+mystring[3] = 'l';
+mystring[4] = 'o';
+mystring[5] = '\0';
+但正如你可能想到的，这并不是一个实用的方法。通常给数组赋值，或更具体些，给字符序列赋值的方法是使用一些函数，例如strcpy。strcpy (string copy) 在函数库cstring (string.h) 中被定义，可以用以下方式被调用：
+strcpy (string1, string2);
+这个函数将string2 中的内容拷贝给string1。string2 可以是一个数组，一个指针，或一个字符串常量constant string。因此用下面的代码可以将字符串常量"Hello"赋给mystring：
+strcpy (mystring, "Hello");
+例如：
+// setting value to string
+#include <iostream.h>
+#include <string.h>
+
+int main () {
+    char szMyName [20];
+    strcpy (szMyName,"J. Soulie");
+    cout << szMyName;
+    return 0;
+}
+
+J. Soulie
+注意：我们需要包括头文件才能够使用函数strcpy。
+虽然我们通常可以写一个像下面setstring一样的简单程序来完成与cstring 中strcpy同样的操作：
+// setting value to string
+#include <iostream.h>
+
+void setstring (char szOut [ ], char szIn [ ]) {
+    int n=0;
+    do {
+        szOut[n] = szIn[n];
+    } while (szIn[n++] != '\0');
+}
+
+int main () {
+    char szMyName [20];
+    setstring (szMyName,"J. Soulie");
+    cout << szMyName;
+    return 0;
+}
+
+J. Soulie
+另一个给数组赋值的常用方法是直接使用输入流(cin)。在这种情况下，字符序列的值是在程序运行时由用户输入的。
+下面的例子重复输出用户在键盘上的任何输入。这个例子简单的显示了如何使用cin来输入字符串：
+// cin with strings
+#include <iostream.h>
+
+int main () {
+    char mybuffer [100];
+    cout << "What's your name? ";
+    cin>>mybuffer;
+    cout << "Hello " << mybuffer << ".\n";
+    cout << "Which is your favourite team? ";
+    cin>>mybuffer;
+    cout << "I like " << mybuffer << " too.\n";
+    return 0;
+}
+
+What's your name? Juan
+Hello Juan.
+Which is your favourite team? Inter Milan
+I like Inter Milan too.
+注意上面例子中两次调用cin 时我们都使用了同一个字符串标识 (mybuffer)。程序在第二次调用时将新输入的内容直接覆盖到第一次输入到buffer 中的内容。
+你可能还记得，在以前与控制台(console)交互的程序中，我们使用extraction operator (>>) 来直接从标准输入设备接收数据。这个方法也同样可以被用来输入字符串，例如，在上面的例子中我们也可以用以下代码来读取用户输入：
+?	它只能接收单独的词(而不能是完整的句子)，因为这种方法以任何空白符为分隔符，包括空格spaces，跳跃符tabulators，换行符newlines和回车符arriage returns。
+?	它不能给buffer指定容量，这使得程序不稳定，如果用户输入超出数组长度，输入信息会被丢失。
+因此，建议在需要用cin来输入字符串时。
+
+字符串和其它数据类型的转换(Converting strings to other types)
+鉴于字符串可能包含其他数据类型的内容，例如数字，将字符串内容转换成数字型变量的功能会有用处。例如一个字符串的内容可能是"1977"，但这一个5个字符组成序列，并不容易转换为一个单独的整数。因此，函数库cstdlib (stdlib.h) 提供了3个有用的函数：
+?	atoi: 将字符串string 转换为整型int
+?	atol: 将字符串string 转换为长整型long
+?	atof: 将字符串string 转换为浮点型float
+所有这些函数接受一个参数，返回一个指定类型的数据(int, long 或 float)。
+// cin and ato* functions
+#include <iostream.h>
+#include <stdlib.h>
+
+int main () {
+    char mybuffer [100];
+    float price;
+    int quantity;
+    cout << "Enter price: ";
+    cin>>mybuffer;
+    price = atof (mybuffer);
+    cout << "Enter quantity: ";
+    cin>>mybuffer;
+    quantity = atoi (mybuffer);
+    cout << "Total price: " << price*quantity;
+    return 0;
+}
+
+Enter price: 2.75
+Enter quantity: 21
+Total price: 57.75
+
+字符串操作函数(Functions to manipulate strings)
+函数库cstring (string.h) 定义了许多可以像C语言类似的处理字符串的函数 (如前面已经解释过的函数strcpy)。这里再简单列举一些最常用的：
+?	strcat: char* strcat (char* dest, const char* src); //将字符串src 附加到字符串dest 的末尾，返回dest。
+?	strcmp: int strcmp (const char* string1, const char* string2); //比较两个字符串string1 和string2。如果两个字符串相等，返回0。
+?	strcpy: char* strcpy (char* dest, const char* src); //将字符串src 的内容拷贝给dest，返回dest 。
+?	strlen: size_t strlen (const char* string); //返回字符串的长度。
+注意：char* 与char[] 相同。
+关于这个函数库的更多信息，参阅 C++ Reference 。
+
+3.3 指针 （Pointers）
+我们已经明白变量其实是可以由标识来存取的内存单元。但这些变量实际上是存储在内存中具体的位置上的。对我们的程序来说，计算机内存只是一串连续的单字节单元(1byte cell)，即最小数据单位，每一个单元有一个唯一地址。
+计算机内存就好像城市中的街道。在一条街上，所有的房子被顺序编号，每所房子有唯一编号。因此如果我们说芝麻街27号，我们很容易找到它，因为只有一所房子会是这个编号，而且我们知道它会在26号和28号之间。
+同房屋按街道地址编号一样，操作系统(operating system)也按照唯一顺序编号来组织内存。因此，当我们说内存中的位置1776，我们知道内存中只有一个位置是这个地址，而且它在地址1775和1777之间。
+
+地址操作符/去引操作符 Address/dereference operator (&)
+当我们声明一个变量的同时，它必须被存储到内存中一个具体的单元中。通常我们并不会指定变量被存储到哪个具体的单元中—幸亏这通常是由编译器和操作系统自动完成的，但一旦操作系统指定了一个地址，有些时候我们可能会想知道变量被存储在哪里了。
+这可以通过在变量标识前面加与符号ampersand sign (&)来实现，它表示"...的地址" ("address of")，因此称为地址操作符(adress operator)，又称去引操作符(dereference operator)。例如：
+ted = &andy;
+将变量andy的地址赋给变量ted，因为当在变量名称andy 前面加ampersand (&) 符号，我们指的将不再是该变量的内容，而是它在内存中的地址。
+假设andy 被放在了内存中地址1776的单元中，然后我们有下列代码：
+andy = 25;
+fred = andy;
+ted = &andy;
+其结果显示在下面的图片中：
+
+我们将变量andy 的值赋给变量fred，这与以前我们看到很多例子都相同，但对于ted，我们把操作系统存储andy的内存地址赋给它，我们想像该地址为1776 (它可以是任何地址，这里只是一个假设的地址)，原因是当给ted 赋值的时候，我们在andy 前面加了ampersand (&) 符号。
+存储其它变量地址的变量(如上面例子中的ted )，我们称之为指针(pointer)。在C++ 中，指针pointers 有其特定的优点，因此经常被使用。在后面我们将会看到这种变量如何被声明。
+
+引用操作符Reference operator (*)
+使用指针的时候，我们可以通过在指针标识的前面加星号asterisk (*)来存储该指针指向的变量所存储的数值，它可以被翻译为“所指向的数值”（"value pointed by"）。因此，仍用前面例子中的数值，如果我们写： beth = *ted; (我们可以读作："beth 等与ted所指向的数值") beth 将会获得数值25，因为ted 是1776，而1776 所指向的数值为25。
+
+你必须清楚的区分ted 存储的是1776，但*ted (前面加asterisk * ) 指的是地址1776中存储的数值，即25。注意加或不加星号*的不同(下面代码中注释显示了如何读这两个不同的表达式):
+beth = ted; // beth 等于 ted ( 1776 )
+beth = *ted; // beth 等于 ted 所指向的数值 ( 25 )
+
+地址或反引用操作符Operator of address or dereference (&)
+它被用作一个变量前缀，可以被翻译为“…的地址”("address of")，因此：&variable1 可以被读作 variable1的地址("address of variable1" )。
+引用操作符Operator of reference (*)
+它表示要取的是表达式所表示的地址指向的内容。它可以被翻译为“…指向的数值” ("value pointed by")。
+* mypointer 可以被读作 "mypointer指向的数值"。
+继续使用上面开始的例子，看下面的代码：
+andy = 25;
+ted = &andy;
+现在你应该可以清楚的看到以下等式全部成立：
+andy == 25
+&andy == 1776
+ted == 1776
+*ted == 25
+第一个表达式很容易理解，因为我们有赋值语句andy=25;。第二个表达式使用了地址（或反引用）操作符(&) 来返回变量andy的地址，即 1776。第三个表达式很明显成立，因为第二个表达式为真，而我们给ted赋值的语句为ted = &andy;。第四个表达式使用了引用操作符 (*)，相当于ted指向的地址中存储的数值，即25。
+由此你也可以推断出，只要ted 所指向的地址中存储的数值不变，以下表达式也为真：
+*ted == andy
+声明指针型变量Declaring variables of type pointer
+由于指针可以直接引用它所指向的数值，因此有必要在声明指针的时候指明它所指向的数据类型。指向一个整型int或浮点型float数据的指针与指向一个字符型char数据的指针并不相同。
+因此，声明指针的格式如下：
+type * pointer_name;
+这里，type 是指针所指向的数据的类型，而不是指针自己的类型。例如：
+int * number;
+char * character;
+float * greatnumber;
+它们是3个指针的声明，每一个指针指向一种不同数据类型。这三个指针本身其实在内存中占用同样大小的内存空间（指针的大小取决于不同的操作系统），但它们所指向的数据是不同的类型，并占用不同大小的内存空间，一个是整型int，一个是字符型char ，还有一个是浮点型float。
+需要强调的一点是，在指针声明时的星号asterisk (*) 仅表示这里声明的是一个指针，不要把它和前面我们用过的引用操作符混淆，虽然那也是写成一个星号 (*)。它们只是用同一符号表示的两个不同任务。
+// my first pointer
+#include <iostream.h>
+
+int main ( ) {
+    int value1 = 5, value2 = 15;
+    int * mypointer;
+    mypointer = &value1;
+    *mypointer = 10;
+    mypointer = &value2;
+    *mypointer = 20;
+    cout << "value1==" << value1 << "/ value2==" << value2;
+    return 0;
+}
+
+value1==10 / value2==20
+注意变量value1 和 value2 是怎样间接的被改变数值的。首先我们使用 ampersand sign (&) 将value1的地址赋给mypointer 。然后我们将10 赋给 mypointer所指向的数值，它其实指向value1的地址，因此，我们间接的修改了value1的数值。
+为了让你了解在同一个程序中一个指针可以被用作不同的数值，我们在这个程序中用value2 和同一个指针重复了上面的过程。
+下面是一个更复杂一些的例子：
+// more pointers
+#include <iostream.h>
+
+int main () {
+    int value1 = 5, value2 = 15;
+    int *p1, *p2;
+    p1 = &value1; // p1 = address of value1
+    p2 = &value2; // p2 = address of value2
+    *p1 = 10; // value pointed by p1 = 10
+    *p2 = *p1; // value pointed by p2 = value pointed by p1
+    p1 = p2; // p1 = p2 (value of pointer copied)
+    *p1 = 20; // value pointed by p1 = 20
+    cout << "value1==" << value1 << "/ value2==" << value2;
+    return 0;
+}
+
+value1==10 / value2==20
+上面每一行都有注释说明代码的意思：ampersand (&) 为"address of"，asterisk (*) 为 "value pointed by"。注意有些包含p1 和p2 的表达式不带星号。加不加星号的含义十分不同：星号(*)后面跟指针名称表示指针所指向的地方，而指针名称不加星号(*)表示指针本身的数值，即它所指向的地方的地址。
+另一个需要注意的地方是这一行：
+int *p1, *p2;
+声明了上例用到的两个指针，每个带一个星号(*)，因为是这一行定义的所有指针都是整型int (而不是 int*)。原因是引用操作符(*) 的优先级顺序与类型声明的相同，因此，由于它们都是向右结合的操作，星号被优先计算。我们在 section 1.3: Operators 中已经讨论过这些。注意在声明每一个指针的时候前面加上星号asterisk (*)。
+
+指针和数组Pointers and arrays
+数组的概念与指针的概念联系非常解密。其实数组的标识相当于它的第一个元素的地址，就像一个指针相当于它所指向的第一个元素的地址，因此其实它们是同一个东西。例如，假设我们有以下声明：
+int numbers [20];
+int * p;
+下面的赋值为合法的：
+p = numbers;
+这里指针p 和numbers 是等价的，它们有相同的属性，唯一的不同是我们可以给指针p赋其它的数值，而numbers 总是指向被定义的20个整数组中的第一个。所以，p只是一个普通的指针变量，而与之不同，numbers 是一个指针常量(constant pointer)，数组名的确是一个指针常量。因此虽然前面的赋值表达式是合法的，但下面的不是：
+numbers = p;
+因为numbers 是一个数组(指针常量)，常量标识不可以被赋其它数值。
+由于变量的特性，以下例子中所有包含指针的表达式都是合法的：
+// more pointers
+#include <iostream.h>
+
+int main () {
+    int numbers[5];
+    int * p;
+    p = numbers;
+    *p = 10;
+    p++;
+    *p = 20;
+    p = &numbers[2];
+    *p = 30;
+    p = numbers + 3;
+    *p = 40;
+    p = numbers;
+    *(p+4) = 50;
+    for (int n=0; n<5; n++)
+    cout << numbers[n] << ", ";
+    return 0;
+}
+
+10, 20, 30, 40, 50,
+在数组一章中我们使用了括号[]来指明我们要引用的数组元素的索引(index)。中括号[]也叫位移(offset)操作符，它相当于在指针中的地址上加上括号中的数字。例如，下面两个表达式互相等价：
+a[5] = 0; // a [offset of 5] = 0
+*(a+5) = 0; // pointed by (a+5) = 0
+不管a 是一个指针还是一个数组名， 这两个表达式都是合法的。
+
+指针初始化Pointer initialization
+当声明一个指针的时候我们可能需要同时指定它们指向哪个变量，
+int number;
+int *tommy = &number;
+这相当于：
+int number;
+int *tommy;
+tommy = &number;
+当给一个指针赋值的时候，我们总是赋给它一个地址值，而不是它所指向数据的值。你必须考虑到在声明一个指针的时候，星号 (*) 只是用来指明它是指针，而从不表示引用操作符reference operator (*)。记住，它们是两种不同操作，虽然它们写成同样的符号。因此，我们要注意不要将以上的代码与下面的代码混淆：
+int number;
+int *tommy;
+*tommy = &number;
+这些代码也没有什么实际意义。
+在定义数组指针的时候，编译器允许我们在声明变量指针的同时对数组进行初始化，初始化的内容需要是常量，例如：
+char * terry = "hello";
+在这个例子中，内存中预留了存储"hello" 的空间，并且terry被赋予了向这个内存块的第一个字符（对应’h’）的指针。假设"hello"存储在地址1702，下图显示了上面的定义在内存中状态：
+
+这里需要强调，terry 存储的是数值1702 ，而不是'h' 或 "hello"，虽然1702 指向这些字符。
+指针terry 指向一个字符串，可以被当作数组一样使用（数组只是一个常量指针）。例如，如果我们的心情变了，而想把terry指向的内容中的字符'o' 变为符号'!' ，我们可以用以下两种方式的任何一种来实现：
+terry[4] = '!';
+*(terry+4) = '!';
+记住写 terry[4] 与*(terry+4)是一样的，虽然第一种表达方式更常用一些。以上两个表达式都会实现以下改变：
+
+指针的数学运算Arithmetic of pointers
+对指针进行数学运算与其他整型数据类型进行数学运算稍有不同。首先，对指针只有加法和减法运算，其它运算在指针世界里没有意义。但是指针的加法和减法的具体运算根据它所指向的数据的类型的大小的不同而有所不同。
+我们知道不同的数据类型在内存中占用的存储空间是不一样的。例如，对于整型数据，字符char 占用1 的字节(1 byte)，短整型short 占用2 个字节，长整型long 占用4个字节。
+假设我们有3个指针：
+char *mychar;
+short *myshort;
+long *mylong;
+而且我们知道他们分别指向内存地址1000, 2000 和3000。
+因此如果我们有以下代码：
+mychar++;
+myshort++;
+mylong++;
+就像你可能想到的，mychar的值将会变为1001。而myshort 的值将会变为2002，mylong的值将会变为3004。原因是当我们给指针加１时，我们实际是让该指针指向下一个与它被定义的数据类型的相同的元素。因此，它所指向的数据类型的长度字节数将会被加到指针的数值上。以上过程可以由下图表示：
+
+这一点对指针的加法和减法运算都适用。如果我们写以下代码，它们与上面例子的作用一抹一样： mychar = mychar + 1;
+myshort = myshort + 1;
+mylong = mylong + 1;
+这里需要提醒你的是，递增 (++) 和递减 (--) 操作符比引用操作符reference operator (*)有更高的优先级，因此，以下的表达式有可能引起歧义：
+*p++;
+*p++ = *q++;
+第一个表达式等同于*(p++) ，它所作的是增加p (它所指向的地址，而不是它存储的数值)。
+在第二个表达式中，因为两个递增操作(++) 都是在整个表达式被计算之后进行而不是在之前，所以*q 的值首先被赋予*p ，然后q 和p 都增加1。它相当于：
+*p = *q;
+p++;
+q++;
+像通常一样，我们建议使用括号()以避免意想不到的结果。
+
+指针的指针Pointers to pointers
+C++ 允许使用指向指针的指针。要做到这一点，我们只需要在每一层引用之前加星号(*)即可：
+char a;
+char * b;
+char ** c;
+a = 'z';
+b = &a;
+c = &b;
+假设随机选择内存地址为7230, 8092 和10502，以上例子可以用下图表示：
+
+(方框内为变量的内容；方框下面为内存地址)
+这个例子中新的元素是变量c，关于它我们可以从3个方面来讨论，每一个方面对应了不同的数值：
+c 是一个(char **)类型的变量，它的值是8092
+*c 是一个(char*)类型的变量，它的值是7230
+**c 是一个(char)类型的变量，它的值是'z'
+
+空指针void pointers
+指针void 是一种特殊类型的指针。void 指针可以指向任意类型的数据，可以是整数，浮点数甚至字符串。唯一个限制是被指向的数值不可以被直接引用（不可以对它们使用引用星号*），因为它的长度是不定的，因此，必须使用类型转换操作或赋值操作来把void 指针指向一个具体的数据类型。
+它的应用之一是被用来给函数传递通用参数：
+// integer increaser
+#include <iostream.h>
+
+void increase (void* data, int type) {
+    switch (type) {
+        case sizeof(char) : (*((char*)data))+=1; break;
+        case sizeof(short): (*((short*)data))+=1; break;
+        case sizeof(long) : (*((long*)data))+=1; break;
+    }
+}
+
+int main () {
+    char a = 5;
+    short b = 9;
+    long c = 12;
+    increase (&a,sizeof(a));
+    increase (&b,sizeof(b));
+    increase (&c,sizeof(c));
+    cout << (int) a << ", " << b << ", " << c;
+    return 0;
+}
+
+6, 10, 13
+sizeof 是C++的一个操作符，用来返回其参数的长度字节数常量。例如，sizeof(char) 返回 1，因为 char 类型是１字节长数据类型。
+
+函数指针Pointers to functions
+C++ 允许对指向函数的指针进行操作。它最大的作用是把一个函数作为参数传递给另外一个函数。声明一个函数指针像声明一个函数原型一样，除了函数的名字需要被括在括号内并在前面加星号asterisk (*)。例如：
+// pointer to functions
+#include <iostream.h>
+
+int addition (int a, int b) {
+    return (a+b);
+}
+
+int subtraction (int a, int b) {
+    return (a-b);
+}
+
+int (*minus)(int,int) = subtraction;
+    int operation (int x, int y, int (*functocall)(int,int)) {
+    int g;
+    g = (*functocall)(x,y);
+    return (g);
+}
+
+int main () {
+    int m,n;
+    m = operation (7, 5, addition);
+    n = operation (20, m, minus);
+    cout <<n;
+    return 0;
+}
+
+8
+在这个例子里， minus 是一个全局指针，指向一个有两个整型参数的函数，它被赋值指向函数subtraction，所有这些由一行代码实现：
+int (* minus)(int,int) = subtraction;
+这里似乎解释的不太清楚，有问题问为什么(int int)只有类型，没有参数，就再多说两句。
+
+这里 int (*minus)(int int)实际是在定义一个指针变量，这个指针的名字叫做minus，这个指针的类型是指向一个函数，函数的类型是有两个整型参数并返回一个整型值。
+整句话“int (*minus)(int,int) = subtraction;”是定义了这样一个指针并把函数subtraction的值赋给它，也就是说有了这个定义后minus就代表了函数subtraction。因此括号中的两个int int实际只是一种变量类型的声明，也就是说是一种形式参数而不是实际参数。
+
+3.4 动态内存分配 （Dynamic memory）
+到目前为止，我们的程序中我们只用了声明变量、数组和其他对象（objects）所必需的内存空间，这些内存空间的大小都在程序执行之前就已经确定了。但如果我们需要内存大小为一个变量，其数值只有在程序运行时 (runtime)才能确定，例如有些情况下我们需要根据用户输入来决定必需的内存空间，那么我们该怎么办呢？
+答案是动态内存分配（dynamic memory），为此C++ 集成了操作符new 和delete。
+操作符 new 和 delete 是C++执行指令。本节后面将会介绍这些操作符在C中的等价命令。
+
+
+操作符new 和new[ ]
+操作符new的存在是为了要求动态内存。new 后面跟一个数据类型，并跟一对可选的方括号[ ]里面为要求的元素数。它返回一个指向内存块开始位置的指针。其形式为：
+pointer = new type
+或者
+pointer = new type [elements]
+第一个表达式用来给一个单元素的数据类型分配内存。第二个表达式用来给一个数组分配内存。
+例如：
+int * bobby;
+bobby = new int [5];
+在这个例子里，操作系统分配了可存储5个整型int元素的内存空间，返回指向这块空间开始位置的指针并将它赋给bobby。因此，现在bobby 指向一块可存储5个整型元素的合法的内存空间，如下图所示。
+
+你可能会问我们刚才所作的给指针分配内存空间与定义一个普通的数组有什么不同。最重要的不同是，数组的长度必须是一个常量，这就将它的大小在程序执行之前的设计阶段就被决定了。而采用动态内存分配，数组的长度可以常量或变量，其值可以在程序执行过程中再确定。
+动态内存分配通常由操作系统控制，在多任务的环境中，它可以被多个应用（applications）共享，因此内存有可能被用光。如果这种情况发生，操作系统将不能在遇到操作符new 时分配所需的内存，一个无效指针(null pointer)将被返回。因此，我们建议在使用new之后总是检查返回的指针是否为空(null)，如下例所示：
+int * bobby;
+bobby = new int [5];
+if (bobby == NULL) {
+// error assigning memory. Take measures.
+};
+
+删除操作符delete
+既然动态分配的内存只是在程序运行的某一具体阶段才有用，那么一旦它不再被需要时就应该被释放，以便给后面的内存申请使用。操作符delete 因此而产生，它的形式是：
+delete pointer;
+或
+delete [ ] pointer;
+第一种表达形式用来删除给单个元素分配的内存，第二种表达形式用来删除多元素（数组）的内存分配。在多数编译器中两种表达式等价，使用没有区别， 虽然它们实际上是两种不同的操作，需要考虑操作符重载overloading （我们在后面的section 4.2节中将会看到)。
+// rememb-o-matic
+#include <iostream.h>
+#include <stdlib.h>
+
+int main ( ) {
+    char input [100];
+    int i,n;
+    long * l;
+    cout << "How many numbers do you want to type in? ";
+    cin>>input; i=atoi (input);
+    l= new long[i];
+    if (l == NULL) exit (1);
+    for (n=0; n<i; n++) {
+        cout << "Enter number: ";
+        cin>>input;
+        l[n]=atol (input);
+    }
+    cout << "You have entered: ";
+    for (n=0; n<i; n++) {
+        cout << l[n] << ", ";
+    }
+    delete[] l;
+    return 0;
+}
+
+How many numbers do you want to type in? 5
+Enter number : 75
+Enter number : 436
+Enter number : 1067
+Enter number : 8
+Enter number : 32
+You have entered: 75, 436, 1067, 8, 32,
+这个简单的例子可以记下用户想输入的任意多个数字，它的实现归功于我们动态地向系统申请用户要输入的数字所需的空间。
+NULL是C++库中定义的一个常量，专门设计用来指代空指针的。如果这个常量没有被预先定义，你可以自己定以它为0:
+#define NULL 0
+在检查指针的时候，0和NULL并没有区别。但用NULL 来表示空指针更为常用，并且更易懂。原因是指针很少被用来比较大小或被直接赋予一个除0以外的数字常量，使用NULL，这一赋值行为就被符号化了。
+
+ANSI-C 中的动态内存管理Dynamic memory in ANSI-C
+操作符new 和delete 仅在C++中有效，而在C语言中没有。在C语言中，为了动态分配内存，我们必须求助于函数库stdlib.h。因为该函数库在C++中仍然有效，并且在一些现存的程序仍然使用，所以我们下面将学习一些关于这个函数库中的函数用法。
+
+函数malloc
+这是给指针动态分配内存的通用函数。它的原型是：
+void * malloc (size_t nbytes);
+其中nbytes 是我们想要给指针分配的内存字节数。这个函数返回一个void*类型的指针，因此我们需要用类型转换(type cast)来把它转换成目标指针所需要的数据类型，例如：
+char * ronny;
+ronny = (char *) malloc (10);
+这个例子将一个指向10个字节可用空间的指针赋给ronny。当我们想给一组除char 以外的类型（不是1字节长度的）的数值分配内存的时候，我们需要用元素数乘以每个元素的长度来确定所需内存的大小。幸运的是我们有操作符sizeof，它可以返回一个具体数据类型的长度。
+int * bobby;
+bobby = (int *) malloc (5 * sizeof(int));
+这一小段代码将一个指向可存储5个int型整数的内存块的指针赋给bobby，它的实际长度可能是 2，4或更多字节数，取决于程序是在什么操作系统下被编译的。
+
+函数calloc
+calloc 与malloc 在操作上非常相似，他们主要的区别是在原型上：
+void * calloc (size_t nelements, size_t size);
+因为它接收2个参数而不是1个。这两个参数相乘被用来计算所需内存块的总长度。通常第一个参数(nelements)是元素的个数，第二个参数 (size) 被用来表示每个元素的长度。例如，我们可以像下面这样用calloc定义bobby：
+int * bobby;
+bobby = (int *) calloc (5, sizeof(int));
+malloc 和calloc的另一点不同在于calloc 会将所有的元素初始化为0。
+
+函数realloc
+它被用来改变已经被分配给一个指针的内存的长度。
+void * realloc (void * pointer, size_t size);
+参数pointer 用来传递一个已经被分配内存的指针或一个空指针，而参数size 用来指明新的内存长度。这个函数给指针分配size 字节的内存。这个函数可能需要改变内存块的地址以便能够分配足够的内存来满足新的长度要求。在这种情况下，指针当前所指的内存中的数据内容将会被拷贝到新的地址中，以保证现存数据不会丢失。函数返回新的指针地址。如果新的内存尺寸不能够被满足，函数将会返回一个空指针，但原来参数中的指针pointer 及其内容保持不变。
+
+函数 free
+这个函数用来释放被前面malloc, calloc 或realloc所分配的内存块。
+void free (void * pointer);
+注意：这个函数只能被用来释放由函数malloc, calloc 和realloc所分配的空间。
+你可以参考C++ reference for cstdlib获得更多关于这些函数的信息。
+
+3.5 数据结构 （Data Structures）
+一个数据结构是组合到同一定义下的一组不同类型的数据，各个数据类型的长度可能不同。它的形式是：
+struct model_name {
+type1 element1;
+type2 element2;
+type3 element3;
+.
+.
+} object_name;
+这里model_name 是一个这个结构类型的模块名称。object_name 为可选参数，是一个或多个具体结构对象的标识。在花括号{ }内是组成这一结构的各个元素的类型和子标识。
+如果结构的定义包括参数model_name (可选)，该参数即成为一个与该结构等价的有效的类型名称。例如：
+struct products {
+char name [30];
+float price;
+};
+products apple;
+products orange, melon;
+我们首先定义了结构模块products，它包含两个域：name 和 price，每一个域是不同的数据类型。然后我们用这个结构类型的名称 (products) 来声明了 3个该类型的对象：apple, orange 和melon。
+一旦被定义，products就成为一个新的有效数据类型名称，可以像其他基本数据类型，如int, char或 short 一样，被用来声明该数据类型的对象(object)变量。
+在结构定义的结尾可以加可选项object_name ，它的作用是直接声明该结构类型的对象。例如，我们也可以这样声明结构对象apple, orange和melon：
+struct products {
+char name [30];
+float price;
+}apple, orange, melon;
+并且，像上面的例子中如果我们在定义结构的同时声明结构的对象，参数model_name (这个例子中的products)将变为可选项。但是如果没有model_name，我们将不能在后面的程序中用它来声明更多此类结构的对象。
+清楚地区分结构模型model和它的对象的概念是很重要的。参考我们对变量所使用的术语，模型model 是一个类型type，而对象object 是变量variable。我们可以从同一个模型model (type)实例化出很多对象objects (variables)。
+在我们声明了确定结构模型的3个对象(apple, orange 和 melon)之后，我们就可以对它们的各个域(field)进行操作，这通过在对象名和域名之间插入符号点(.)来实现。例如，我们可以像使用一般的标准变量一样对下面的元素进行操作：
+apple.name
+apple.price
+orange.name
+orange.price
+melon.name
+melon.price
+它们每一个都有对应的数据类型：apple.name, orange.name 和melon.name 是字符数组类型char[30]，而apple.price, orange.price 和 melon.price 是浮点型float。
+下面我们看另一个关于电影的例子：
+// example about structures
+#include <iostream.h>
+#include <string.h>
+#include <stdlib.h>
+
+struct movies_t {
+    char title [50];
+    int year;
+}mine, yours;
+
+void printmovie (movies_t movie);
+
+int main () {
+    char buffer [50];
+    strcpy (mine.title, "2001 A Space Odyssey");
+    mine.year = 1968;
+    cout << "Enter title: ";
+    cin>>yours.title;
+    cout << "Enter year: ";
+    cin>>buffer;
+    yours.year = atoi (buffer);
+    cout << "My favourite movie is:\n ";
+    printmovie (mine);
+    cout << "And yours:\n";
+    printmovie (yours);
+    return 0;
+}
+
+void printmovie (movies_t movie) {
+    cout << movie.title;
+    cout << " (" << movie.year << ")\n";
+}
+
+Enter title: Alien
+Enter year: 1979
+My favourite movie is:
+2001 A Space Odyssey (1968)
+And yours:
+Alien (1979)
+这个例子中我们可以看到如何像使用普通变量一样使用一个结构的元素及其本身。例如，yours.year 是一个整型数据int，而 mine.title 是一个长度为50的字符数组。
+注意这里 mine 和 yours 也是变量，他们是movies_t 类型的变量，被传递给函数printmovie()。因此，结构的重要优点之一就是我们既可以单独引用它的元素，也可以引用整个结构数据块。
+结构经常被用来建立数据库，特别是当我们考虑结构数组的时候。
+// array of structures
+#include <iostream.h>
+#include <stdlib.h>
+
+#define N_MOVIES 5
+
+struct movies_t {
+    char title [50];
+    int year;
+} films [N_MOVIES];
+
+void printmovie (movies_t movie);
+
+int main () {
+    char buffer [50];
+    int n;
+    for (n=0; n<N_MOVIES; n++) {
+        cout << "Enter title: ";
+        cin>>films[n].title;
+        cout << "Enter year: ";
+        cin>>buffer;
+        films[n].year = atoi (buffer);
+    }
+
+    cout << "\nYou have entered these movies:\n";
+    for (n=0; n<N_MOVIES; n++) {
+        printmovie (films[n]);
+    }
+    return 0;
+}
+
+void printmovie (movies_t movie) {
+    cout << movie.title;
+    cout << " (" << movie.year << ")\n";
+}
+
+
+Enter title: Alien
+Enter year: 1979
+Enter title: Blade Runner
+Enter year: 1982
+Enter title: Matrix
+Enter year: 1999
+Enter title: Rear Window
+Enter year: 1954
+Enter title: Taxi Driver
+Enter year: 1975
+
+You have entered these movies:
+Alien (1979)
+Blade Runner (1982)
+Matrix (1999)
+Rear Window (1954)
+Taxi Driver (1975)
+
+结构指针(Pointers to structures)
+就像其它数据类型一样，结构也可以有指针。其规则同其它基本数据类型一样：指针必须被声明为一个指向结构的指针：
+struct movies_t {
+char title [50];
+int year;
+};
+movies_t amovie;
+movies_t * pmovie;
+这里 amovie 是一个结构类型movies_t 的对象，而pmovie 是一个指向结构类型movies_t 的对象的指针。所以，同基本数据类型一样，以下表达式正确的：
+pmovie = &amovie;
+下面让我们看另一个例子，它将引入一种新的操作符：
+// pointers to structures
+#include <iostream.h>
+#include <stdlib.h>
+
+struct movies_t {
+    char title [50];
+    int year;
+};
+
+int main () {
+    char buffer[50];
+
+    movies_t amovie;
+    movies_t * pmovie;
+    pmovie = & amovie;
+
+    cout << "Enter title: ";
+    cin>>pmovie->title;
+    cout << "Enter year: ";
+
+    cin>>buffer;
+    pmovie->year = atoi (buffer);
+
+    cout << "\nYou have entered:\n";
+    cout << pmovie->title;
+    cout << " (" << pmovie->year << ")\n";
+
+    return 0;
+}
+
+Enter title: Matrix
+Enter year: 1999
+
+You have entered:
+Matrix (1999)
+上面的代码中引入了一个重要的操作符：->。这是一个引用操作符，常与结构或类的指针一起使用，以便引用其中的成员元素，这样就避免使用很多括号。例如，我们用：
+pmovie->title
+来代替：
+(*pmovie).title
+以上两种表达式pmovie->title 和 (*pmovie).title 都是合法的，都表示取指针pmovie 所指向的结构其元素title 的值。我们要清楚将它和以下表达区分开：
+*pmovie.title
+它相当于
+*(pmovie.title)
+表示取结构pmovie 的元素title 作为指针所指向的值，这个表达式在本例中没有意义，因为title本身不是指针类型。
+下表中总结了指针和结构组成的各种可能的组合：
+表达式	描述	等价于
+pmovie.title	结构pmovie 的元素title
+pmovie->title	指针pmovie 所指向的结构其元素title 的值	(*pmovie).title
+*pmovie.title	结构pmovie 的元素title 作为指针所指向的值	*(pmovie.title)
+
+结构嵌套(Nesting structures)
+结构可以嵌套使用，即一个结构的元素本身又可以是另一个结构类型。例如：
+struct movies_t {
+    char title [50];
+    int year;
+}
+
+struct friends_t {
+    char name [50];
+    char email [50];
+    movies_t favourite_movie;
+} charlie, maria;
+
+friends_t * pfriends = &charlie;
+因此，在有以上声明之后，我们可以使用下面的表达式：
+charlie.name
+maria.favourite_movie.title
+charlie.favourite_movie.year
+pfriends->favourite_movie.year
+(以上最后两个表达式等价)
+本节中所讨论的结构的概念与C语言中结构概念是一样的。然而，在C++中，结构的概念已经被扩展到与类(class)相同的程度，只是它所有的元素都是公开的(public)。在后面的章节4.1“类”中, 我们将进一步深入讨论这个问题。
+
+3.6 自定义数据类型 （User defined data types）
+前面我们已经看到过一种用户（程序员）定义的数据类型：结构。除此之外，还有一些其它类型的用户自定义数据类型：
+
+定义自己的数据类型 (typedef)
+C++ 允许我们在现有数据类型的基础上定义我们自己的数据类型。我们将用关键字typedef来实现这种定义，它的形式是：
+typedef existing_type new_type_name;
+这里 existing_type 是C++ 基本数据类型或其它已经被定义了的数据类型，new_type_name 是我们将要定义的新数据类型的名称。例如：
+typedef char C;
+typedef unsigned int WORD;
+typedef char * string_t;
+typedef char field [50];
+在上面的例子中，我们定义了四种新的数据类型： C, WORD, string_t 和 field ，它们分别代替 char, unsigned int, char* 和 char[50] 。这样，我们就可以安全的使用以下代码：
+C achar, anotherchar, *ptchar1;
+WORD myword;
+string_t ptchar2;
+field name;
+如果在一个程序中我们反复使用一种数据类型，而在以后的版本中我们有可能改变该数据类型的情况下，typedef 就很有用了。或者如果一种数据类型的名称太长，你想用一个比较短的名字来代替，也可以是用typedef。
+
+联合(Union)
+联合(Union) 使得同一段内存可以被按照不同的数据类型来访问，数据实际是存储在同一个位置的。它的声明和使用看起来与结构(structure)十分相似，但实际功能是完全不同的：
+union model_name {
+type1 element1;
+type2 element2;
+type3 element3;
+.
+.
+} object_name;
+union 中的所有被声明的元素占据同一段内存空间，其大小取声明中最长的元素的大小。例如：
+union mytypes_t {
+    char c;
+    int i;
+    float f;
+} mytypes;
+定义了3个元素：
+mytypes.c
+mytypes.i
+mytypes.f
+每一个是一种不同的数据类型。既然它们都指向同一段内存空间，改变其中一个元素的值，将会影响所有其他元素的值。
+union 的用途之一是将一种较长的基本类型与由其它比较小的数据类型组成的结构(structure)或数组(array)联合使用，例如：
+union mix_t{
+    long l;
+    struct {
+    short hi;
+    short lo;
+} s;
+char c[4];
+} mix;
+以上例子中定义了3个名称：mix.l, mix.s 和 mix.c，我们可以通过这3个名字来访问同一段4 bytes长的内存空间。至于使用哪一个名字来访问，取决于我们想使用什么数据类型，是long, short 还是 char 。下图显示了在这个联合(union)中各个元素在内存中的的可能结构，以及我们如何通过不同的数据类型进行访问：
+
+匿名联合(Anonymous union)
+在 C++ 我们可以选择使联合(union)匿名。如果我们将一个union包括在一个结构(structure)的定义中，并且不赋予它object名称 (就是跟在花括号{}后面的名字)，这个union就是匿名的。这种情况下我们可以直接使用union中元素的名字来访问该元素，而不需要再在前面加 union对象的名称。在下面的例子中，我们可以看到这两种表达方式在使用上的区别：
+union	anonymous union
+struct {
+    char title[50];
+    char author[50];
+    union {
+    float dollars;
+    int yens;
+} price;
+} book;	struct {
+    char title[50];
+    char author[50];
+    union {
+    float dollars;
+    int yens;
+};
+} book;
+以上两种定义的唯一区别在于左边的定义中我们给了union一个名字price，而在右边的定义中我们没给。在使用时的区别是当我们想访问一个对象(object)的元素dollars 和yens 时，在前一种定义的情况下，需要使用：
+book.price.dollars
+book.price.yens
+而在后面一种定义下，我们直接使用：
+book.dollars
+book.yens
+再一次提醒，因为这是一个联合(union)，域dollars 和yens 占据的是同一块内存空间，所以它们不能被用来存储两个不同的值。也就是你可以使用一个dollars 或yens的价格，但不能同时使用两者。
+
+枚举Enumerations (enum)
+枚举(Enumerations)可以用来生成一些任意类型的数据，不只限于数字类型或字符类型，甚至常量true 和false。它的定义形式如下：
+enum model_name {
+value1,
+value2,
+value3,
+.
+.
+} object_name;
+例如，我们可以定义一种新的变量类型叫做color_t 来存储不同的颜色：
+enum colors_t {black, blue, green, cyan, red, purple, yellow, white};
+注意在这个定义里我们没有使用任何基本数据类型。换句话说，我们创造了一种的新的数据类型，而它并没有基于任何已存在的数据类型：类型color_t，花括号{}中包括了它的所有的可能取值。例如，在定义了colors_t 列举类型后，我们可以使用以下表达式 ：
+colors_t mycolor;
+mycolor = blue;
+if (mycolor == green) mycolor = red;
+实际上，我们的枚举数据类型在编译时是被编译为整型数值的，而它的数值列表可以是任何指定的整型常量 。如果没有指定常量，枚举中第一个列出的可能值为0 ，后面的每一个值为前面一个值加1。因此，在我们前面定义的数据类型colors_t 中，black 相当于0， blue 相当于 1， green 相当于2 ，后面依此类推。
+如果我们在定义枚举数据类型的时候明确指定某些可能值（例如第一个）的等价整数值，后面的数值将会在此基础上增加，例如：
+enum months_t { january=1, february, march, april,
+may, june, july, august,
+september, october, november, december} y2k;
+在这个例子中，枚举类型months_t的变量y2k 可以是12种可能取值中的任何一个，从january 到 december ，它们相当于数值1 到 12，而不是0 到 11 ，因为我们已经指定 january 等于1。

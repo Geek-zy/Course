@@ -1,0 +1,83 @@
+#非常感谢网友qqqytyu提供以下代码，
+
+import ftplib
+#import optparse
+
+#浏览目录
+def see_server_tree(ftp,addr,encod='gbk'):
+    ftp.encoding=encod #更改编码方式
+    server_path = "\\"
+    while True:
+        ftp.cwd(server_path)
+        print('download&[文件名] 下载，upload&[本地文件名] 上传，cd&[文件名] 打开文件夹, cd .. 后退,quit 退出')
+        # list = ftp.nlst() #获取目录列表
+        list = []
+        ftp.dir("",list.append)
+        for name in list:
+            print(name) #打印目录
+        cmd = input('>>>')
+        cmd = cmd.split('&')
+        if(cmd[0] == 'download'):#下载
+            download_ftp_file(ftp,server_path+cmd[1],cmd[1])
+        elif(cmd[0] == 'upload'):#上传
+            upload_ftp_file(ftp,server_path+cmd[1],cmd[1])
+        elif(cmd[0] == 'cd'):#进入目录
+            server_path = server_path + cmd[1] + '\\'
+        elif(cmd[0] == 'cd ..'):#后退
+            server_path = server_path.split('\\')
+            server_path = "\\".join(server_path[:-2]) + '\\'
+        elif(cmd[0] == 'quit'):#退出
+            break
+        else:
+            print('输入有误，请重输')
+            continue
+#上传文件
+def upload_ftp_file(ftp , server_file_path , local_file_path):
+    local_file = open(local_file_path, 'rb')  # 二进制读的方式打开文件
+    ftp.storbinary('STOR '+server_file_path, local_file, 1024)  # 上传文件
+    local_file.close()
+    print('---[ok]---')
+#下载文件
+def download_ftp_file(ftp , server_file_path , local_file_path):
+    print(server_file_path)
+    local_file = open(local_file_path , 'wb') #二进制写的方式打开文件
+    ftp.retrbinary('RETR '+server_file_path,local_file.write,1024)
+    # ,1024
+    # )#下载文件
+    local_file.close()
+    print('---[ok]---')
+#连接ftp服务器
+def login_ftp_server(ipaddr , user='' , pwd='' ,timeout = 30 , port = 21 , boolean = False):
+    ftp = ftplib.FTP()#实例化
+    ftp.connect(ipaddr,port,timeout)#连接服务器
+    ftp.set_pasv(boolean)#连接模式
+    ftp.login(user,pwd)#登录
+    print('---登陆成功---')
+    return ftp
+
+def main():
+    addr = input('服务器IP地址:')
+    user = input('用户名-可选:')
+    pwd = input('密码-可选:')
+    ftp=login_ftp_server(addr,user,pwd)
+    see_server_tree(ftp,addr)
+    ftp.quit()
+    print('程序以退出')
+
+if __name__ == '__main__':
+    main()
+# usa = "usage: %prog"
+# ver = "%prog 1.0"
+# paser = optparse.OptionParser(usage=usa , version=ver)
+# paser.add_option("-a",'--address',action = 'store',type='string',dest='addr',
+#                  help='服务器的IP地址',metavar='192.168.1.1')
+# paser.add_option('-u','--username',action = 'store',type='string',dest='user',
+#                  default='',help='用户名-可选',metavar='username')
+# paser.add_option('-p', '--password', action='store', type='string', dest='pwd',
+#                  default='',help='密码-可选', metavar='password')
+# (options,args) = paser.parse_args()
+# if(len(options.addr)):
+#     main(addr,user,pwd)
+# else:
+#     print("参数传入错误")
+#     paser.print_help()

@@ -1,0 +1,459 @@
+HTML 表单用于搜集不同类型的用户输入。
+实例
+文本域 (Text field)
+
+[demo]
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+
+    <form>
+        名：
+        <input type="text" name="firstname">
+        <br />
+        姓：
+        <input type="text" name="lastname">
+    </form>
+
+    </body>
+</html>
+
+[/demo]
+
+
+本例演示如何在 HTML 页面创建文本域。用户可以在文本域中写入文本。
+
+
+密码域
+
+[demo]
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+
+    <form>
+        用户：
+        <input type="text" name="user">
+        <br />
+        密码：
+        <input type="password" name="password">
+    </form>
+    <p>
+        请注意，当您在密码域中键入字符时，浏览器将使用项目符号来代替这些字符。
+    </p>
+    </body>
+</html>
+
+[/demo]
+
+
+本例演示如何创建 HTML 的密码域。
+
+
+表单
+表单是一个包含表单元素的区域。
+表单元素是允许用户在表单中（比如：文本域、下拉列表、单选框、复选框等等）输入信息的元素。
+表单使用表单标签（<form>）定义。
+<form>
+...
+  input 元素
+...
+</form>
+输入
+多数情况下被用到的表单标签是输入标签（<input>）。输入类型是由类型属性（type）定义的。大多数经常被用到的输入类型如下：
+文本域（Text Fields）
+当用户要在表单中键入字母、数字等内容时，就会用到文本域。
+<form>
+First name: 
+<input type="text" name="firstname" />
+<br />
+Last name: 
+<input type="text" name="lastname" />
+</form>
+
+浏览器显示如下：
+First name:   
+Last name:  
+
+注意，表单本身并不可见。同时，在大多数浏览器中，文本域的缺省宽度是20个字符。
+单选按钮（Radio Buttons）
+当用户从若干给定的的选择中选取其一时，就会用到单选框。
+<form>
+<input type="radio" name="sex" value="male" /> Male
+<br />
+<input type="radio" name="sex" value="female" /> Female
+</form>
+
+浏览器显示如下：
+ Male 
+ Female
+
+注意，只能从中选取其一。
+复选框（Checkboxes）
+当用户需要从若干给定的选择中选取一个或若干选项时，就会用到复选框。
+<form>
+<input type="checkbox" name="bike" />
+I have a bike
+<br />
+<input type="checkbox" name="car" />
+I have a car
+</form>
+
+浏览器显示如下：
+ I have a bike 
+ I have a car
+
+表单的动作属性（Action）和确认按钮
+当用户单击确认按钮时，表单的内容会被传送到另一个文件。表单的动作属性定义了目的文件的文件名。由动作属性定义的这个文件通常会对接收到的输入数据进行相关的处理。
+<form name="input" action="html_form_action.asp" method="get">
+Username: 
+<input type="text" name="user" />
+<input type="submit" value="Submit" />
+</form>
+浏览器显示如下：
+Username:   
+假如您在上面的文本框内键入几个字母，然后点击确认按钮，那么输入数据会传送到 "html_form_action.asp" 的页面。该页面将显示出输入的结果。
+
+
+更多实例
+复选框
+
+[demo]
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+
+    <form>
+        我喜欢自行车：
+        <input type="checkbox" name="Bike">
+        <br />
+        我喜欢汽车：
+        <input type="checkbox" name="Car">
+    </form>
+
+    </body>
+</html>
+
+[/demo]
+
+
+本例演示如何在 HTML 页中创建复选框。用户可以选中或取消选取复选框。
+
+
+单选按钮
+
+[demo]
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+
+    <form>
+        男性：
+        <input type="radio" checked="checked" name="Sex" value="male" />
+        <br />
+        女性：
+        <input type="radio" name="Sex" value="female" />
+    </form>
+
+    <p>当用户点击一个单选按钮时，该按钮会变为选中状态，其他所有按钮会变为非选中状态。</p>
+
+    </body>
+</html>
+
+[/demo]
+
+
+本例演示如何在 HTML 中创建单选按钮。
+
+
+简单的下拉列表
+
+[demo]
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+
+    <form>
+        <select name="cars">
+        <option value="volvo">Volvo</option>
+        <option value="saab">Saab</option>
+        <option value="fiat">Fiat</option>
+        <option value="audi">Audi</option>
+        </select>
+    </form>
+
+    </body>
+</html>
+
+[/demo]
+
+
+本例演示如何在 HTML 页面中创建简单的下拉列表框。下拉列表框是一个可选列表。
+
+
+另一个下拉列表
+
+[demo]
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+
+    <form>
+        <select name="cars">
+        <option value="volvo">Volvo</option>
+        <option value="saab">Saab</option>
+        <option value="fiat" selected="selected">Fiat</option>
+        <option value="audi">Audi</option>
+        </select>
+    </form>
+
+    </body>
+</html>
+
+[/demo]
+
+
+本例演示如何创建一个简单的带有预选值的下拉列表。（编者注：预选值指预先指定的首选项。）
+
+
+文本域(Textarea)
+
+[demo]
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+
+    <p>
+        This example cannot be edited
+        because our editor uses a textarea
+        for input,
+        and your browser does not allow
+        a textarea inside a textarea.
+    </p>
+
+    <textarea rows="10" cols="30">
+    The cat was playing in the garden.
+
+    </body>
+</html>
+
+[/demo]
+
+
+本例演示如何创建文本域（多行文本输入控件）。用户可在文本域中写入文本。可写入字符的字数不受限制。
+
+
+创建按钮
+
+[demo]
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+
+    <form>
+        <input type="button" value="Hello world!">
+    </form>
+
+    </body>
+</html>
+
+[/demo]
+
+
+本例演示如何创建按钮。你可以对按钮上的文字进行自定义。
+
+
+Fieldset around data
+
+[demo]
+
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+
+    <form>
+      <fieldset>
+        <legend>健康信息</legend>
+        身高：<input type="text" />
+        体重：<input type="text" />
+      </fieldset>
+    </form>
+
+    <p>如果表单周围没有边框，说明您的浏览器太老了。</p>
+
+    </body>
+</html>
+
+[/demo]
+
+
+本例演示如何在数据周围绘制一个带标题的框。
+
+
+表单实例
+带有输入框和确认按钮的表单
+
+[demo]
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+
+    <form action="/example/html/form_action.asp" method="get">
+      <p>First name: <input type="text" name="fname" /></p>
+      <p>Last name: <input type="text" name="lname" /></p>
+      <input type="submit" value="Submit" />
+    </form>
+
+    <p>请单击确认按钮，输入会发送到服务器上名为 "form_action.asp" 的页面。</p>
+
+    </body>
+</html>
+
+[/demo]
+
+
+本例演示如何向页面添加表单。此表单包含两个输入框和一个确认按钮。
+
+
+带有复选框的表单
+
+[demo]
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+
+    <form name="input" action="/html/html_form_action.asp" method="get">
+        I have a bike:
+        <input type="checkbox" name="vehicle" value="Bike" checked="checked" />
+        <br />
+        I have a car:
+        <input type="checkbox" name="vehicle" value="Car" />
+        <br />
+        I have an airplane:
+        <input type="checkbox" name="vehicle" value="Airplane" />
+        <br /><br />
+        <input type="submit" value="Submit" />
+    </form>
+
+    <p>如果您点击 "Submit" 按钮，您将把输入传送到名为 html_form_action.asp 的新页面。</p>
+
+    </body>
+</html>
+
+[/demo]
+
+
+此表单包含两个复选框和一个确认按钮。
+
+
+带有单选按钮的表单
+
+[demo]
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+
+    <form name="input" action="/html/html_form_action.asp" method="get">
+        Male:
+        <input type="radio" name="Sex" value="Male" checked="checked">
+        <br />
+        Female: 
+        <input type="radio" name="Sex" value="Female">
+        <br />
+        <input type ="submit" value ="Submit">
+    </form> 
+
+    <p>如果您点击 "Submit" 按钮，您将把输入传送到名为 html_form_action.asp 的新页面。</p>
+
+    </body>
+</html>
+
+[/demo]
+
+
+
+此表单包含两个单选框和一个确认按钮。
+
+
+从表单发送电子邮件
+
+[demo]
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+    <form action="MAILTO:someone@w3school.com.cn" method="post" enctype="text/plain">
+
+        <h3>这个表单会把电子邮件发送到 W3School。</h3>
+        姓名：<br />
+        <input type="text" name="name" value="yourname" size="20">
+        <br />
+        电邮：<br />
+        <input type="text" name="mail" value="yourmail" size="20">
+        <br />
+        内容：<br />
+        <input type="text" name="comment" value="yourcomment" size="40">
+        <br /><br />
+        <input type="submit" value="发送">
+        <input type="reset" value="重置">
+
+    </form>
+    </body>
+</html>
+
+[/demo]
+
+
+此例演示如何从表单发送电子邮件。
+
+表单标签
+标签	描述
+<form>	定义供用户输入的表单
+<input>	定义输入域
+<textarea>	定义文本域 (一个多行的输入控件)
+<label>	定义一个控制的标签
+<fieldset>	定义域
+<legend>	定义域的标题
+<select>	定义一个选择列表
+<optgroup>	定义选项组
+<option>	定义下拉列表中的选项
+<button>	定义一个按钮
+<isindex>	已废弃。由 <input> 代替。

@@ -1,0 +1,1271 @@
+十九：上下文（Context）选项和参数
+
+PHP 提供了多种上下文选项和参数，可用于所有的文件系统或数据流封装协议。上下文（Context）由 stream_context_create() 创建。选项可通过 stream_context_set_option() 设置，参数可通过 stream_context_set_params() 设置。
+
+套接字上下文选项
+
+套接字上下文选项 — 套接字上下文选项列表
+
+说明
+
+套接字上下文选项可用于所有工作在套接字上的封装协议，像 tcp, http 和 ftp.
+
+可选项
+
+bindto
+用户PHP访问网络的指定的IP地址（IPv4或IPv6其中的一个）和/或 端口号，这个语法是 ip:port. Setting the IP or the port to 0 will let the system choose the IP and/or port.
+
+Note:
+
+As FTP creates two socket connections during normal operation, the port number cannot be specified using this option.
+
+backlog
+Used to limit the number of outstanding connections in the socket’s listen queue.
+
+Note:
+
+This is only applicable to stream_socket_server().
+
+更新日志
+
+版本	说明
+5.1.0	Added bindto.
+5.3.3	Added backlog.
+范例
+
+Example #1 Basic bindto usage example
+
+[demo]
+
+<?php
+// connect to the internet using the '192.168.0.100' IP
+$opts = array(
+    'socket' => array(
+        'bindto' => '192.168.0.100:0',
+    ),
+);
+
+
+// connect to the internet using the '192.168.0.100' IP and port '7000'
+$opts = array(
+    'socket' => array(
+        'bindto' => '192.168.0.100:7000',
+    ),
+);
+
+
+// connect to the internet using port '7000'
+$opts = array(
+    'socket' => array(
+        'bindto' => '0:7000',
+    ),
+);
+
+
+// create the context...
+$context = stream_context_create($opts);
+
+// ...and use it to fetch the data
+echo file_get_contents('http://www.example.com', false, $context);
+
+?>
+
+[/demo]
+
+HTTP context 选项
+
+HTTP context 选项 — HTTP context 的选项列表
+
+说明
+
+提供给 http:// 和 https:// 传输协议的 context 选项。 transports.
+
+可选项
+
+method string
+远程服务器支持的 GET，POST 或其它 HTTP 方法。
+
+默认值是 GET。
+
+header string
+请求期间发送的额外 header 。在此选项的值将覆盖其他值 （诸如 User-agent:， Host: 和 Authentication:）。
+
+user_agent string
+要发送的 header User-Agent: 的值。如果在上面的 header context 选项中没有指定 user-agent，此值将被使用。
+
+默认使用 php.ini 中设置的 user_agent。
+
+content string
+在 header 后面要发送的额外数据。通常使用POST或PUT请求。
+
+proxy string
+URI 指定的代理服务器的地址。(e.g. tcp://proxy.example.com:5100).
+
+request_fulluri boolean
+当设置为 TRUE 时，在构建请求时将使用整个 URI 。(i.e. GET http://www.example.com/path/to/file.html HTTP/1.0)。 虽然这是一个非标准的请求格式，但某些代理服务器需要它。
+
+默认值是 FALSE.
+
+follow_location integer
+跟随 Location header 的重定向。设置为 0 以禁用。
+
+默认值是 1。
+
+max_redirects integer
+跟随重定向的最大次数。值为 1 或更少则意味不跟随重定向。
+
+默认值是 20。
+
+protocol_version float
+HTTP 协议版本。
+
+默认值是 1.0。
+
+Note:
+
+PHP 5.3.0 以前的版本没有实现分块传输解码。 如果此值设置为 1.1 ，与 1.1 的兼容将是你的责任。
+
+timeout float
+读取超时时间，单位为秒（s），用 float 指定(e.g. 10.5)。
+
+默认使用 php.ini 中设置的 default_socket_timeout。
+
+ignore_errors boolean
+即使是故障状态码依然获取内容。
+
+默认值为 FALSE.
+
+更新日志
+
+版本	说明
+5.3.4	添加 follow_location。
+5.3.0	当 protocol_version 设置为 1.1 时支持分块传输解码。
+5.2.10	添加 ignore_errors。
+5.2.10	header 现在可以是一个数字索引的 array。
+5.2.1	添加 timeout。
+5.1.0	Added HTTPS proxying through HTTP proxies. 添加经由 HTTP 代理的 HTTPS 代理。
+5.1.0	添加 max_redirects。
+5.1.0	添加 protocol_version。
+范例
+
+Example #1 获取一个页面并发送 POST 数据
+
+[demo]
+
+<?php
+
+$postdata = http_build_query(
+    array(
+        'var1' => 'some content',
+        'var2' => 'doh'
+    )
+);
+
+$opts = array('http' =>
+    array(
+        'method'  => 'POST',
+        'header'  => 'Content-type: application/x-www-form-urlencoded',
+        'content' => $postdata
+    )
+);
+
+$context = stream_context_create($opts);
+
+$result = file_get_contents('http://example.com/submit.php', false, $context);
+
+?>
+
+[/demo]
+
+Example #2 忽略重定向并获取 header 和内容
+
+[demo]
+
+<?php
+
+$url = "http://www.example.org/header.php";
+
+$opts = array('http' =>
+    array(
+        'method' => 'GET',
+        'max_redirects' => '0',
+        'ignore_errors' => '1'
+    )
+);
+
+$context = stream_context_create($opts);
+$stream = fopen($url, 'r', false, $context);
+
+// header information as well as meta data
+// about the stream
+var_dump(stream_get_meta_data($stream));
+
+// actual data at $url
+var_dump(stream_get_contents($stream));
+fclose($stream);
+?>
+
+[/demo]
+
+注释
+
+Note: Underlying socket stream context options
+Additional context options may be supported by the underlying transport For http:// streams, refer to context options for the tcp:// transport. For https:// streams, refer to context options for the ssl:// transport.
+
+Note: HTTP status line
+When this stream wrapper follows a redirect, the wrapper_data returned by stream_get_meta_data() might not necessarily contain the HTTP status line that actually applies to the content data at index 0.
+
+array (
+  'wrapper_data' =>
+  array (
+    0 => 'HTTP/1.0 301 Moved Permantenly',
+    1 => 'Cache-Control: no-cache',
+    2 => 'Connection: close',
+    3 => 'Location: http://example.com/foo.jpg',
+    4 => 'HTTP/1.1 200 OK',
+    ...
+The first request returned a 301 (permanent redirect), so the stream wrapper automatically followed the redirect to get a 200 response (index = 4).
+参见
+
+http://
+套接字上下文选项
+SSL context options
+FTP context options
+
+FTP context options — FTP context option listing
+
+说明
+
+Context options for ftp:// and ftps:// transports.
+
+可选项
+
+overwrite boolean
+Allow overwriting of already existing files on remote server. Applies to write mode (uploading) only.
+
+Defaults to FALSE.
+
+resume_pos integer
+File offset at which to begin transfer. Applies to read mode (downloading) only.
+
+Defaults to 0 (Beginning of File).
+
+proxy string
+Proxy FTP request via http proxy server. Applies to file read operations only. Ex: tcp://squid.example.com:8000.
+
+更新日志
+
+版本	说明
+5.1.0	Added proxy.
+5.0.0	Added overwrite and resume_pos.
+注释
+
+Note: Underlying socket stream context options
+Additional context options may be supported by the underlying transport For ftp:// streams, refer to context options for the tcp:// transport. For ftps:// streams, refer to context options for the ssl:// transport.
+
+参见
+
+ftp://
+套接字上下文选项
+SSL context options
+SSL context options
+
+SSL context options — SSL context option listing
+
+说明
+
+Context options for ssl:// and tls:// transports.
+
+可选项
+
+verify_peer boolean
+Require verification of SSL certificate used.
+
+Defaults to FALSE.
+
+allow_self_signed boolean
+Allow self-signed certificates. Requires verify_peer.
+
+Defaults to FALSE
+
+cafile string
+Location of Certificate Authority file on local filesystem which should be used with the verify_peer context option to authenticate the identity of the remote peer.
+
+capath string
+If cafile is not specified or if the certificate is not found there, the directory pointed to by capath is searched for a suitable certificate. capath must be a correctly hashed certificate directory.
+
+local_cert string
+Path to local certificate file on filesystem. It must be a PEM encoded file which contains your certificate and private key. It can optionally contain the certificate chain of issuers.
+
+passphrase string
+Passphrase with which your local_cert file was encoded.
+
+CN_match string
+Common Name we are expecting. PHP will perform limited wildcard matching. If the Common Name does not match this, the connection attempt will fail.
+
+verify_depth integer
+Abort if the certificate chain is too deep.
+
+Defaults to no verification.
+
+ciphers string
+Sets the list of available ciphers. The format of the string is described in » ciphers(1).
+
+Defaults to DEFAULT.
+
+capture_peer_cert boolean
+If set to TRUE a peer_certificate context option will be created containing the peer certificate.
+
+capture_peer_cert_chain boolean
+If set to TRUE a peer_certificate_chain context option will be created containing the certificate chain.
+
+SNI_enabled boolean
+If set to TRUE server name indication will be enabled. Enabling SNI allows multiple certificates on the same IP address.
+
+SNI_server_name string
+If set, then this value will be used as server name for server name indication. If this value is not set, then the server name is guessed based on the hostname used when opening the stream.
+
+disable_compression boolean
+If set, disable TLS compression. This can help mitigate the CRIME attack vector.
+
+更新日志
+
+版本	说明
+5.4.13	Added disable_compression. Requires OpenSSL >= 1.0.0.
+5.3.2	Added SNI_enabled and SNI_server_name.
+5.0.0	Added capture_peer_cert, capture_peer_chain and ciphers.
+注释
+
+Note: Because ssl:// is the underlying transport for the https:// and ftps:// wrappers, any context options which apply to ssl:// also apply to https:// and ftps://.
+
+Note: For SNI (Server Name Indication) to be available, then PHP must be compiled with OpenSSL 0.9.8j or greater. Use the OPENSSL_TLSEXT_SERVER_NAME to determine whether SNI is supported.
+
+参见
+
+套接字上下文选项
+CURL context options
+
+CURL context options — CURL 上下文选项列表
+
+说明
+
+CURL 上下文选项在 CURL 扩展被编译（通过 --with-curlwrappers configure选项）时可用
+
+可选项
+
+method string
+GET，POST，或者其他远程服务器支持的 HTTP 方法。
+
+默认为 GET.
+
+header string
+额外的请求标头。这个值会覆盖通过其他选项设定的值（如： User-agent:，Host:， ，Authentication:）。
+
+user_agent string
+设置请求时 User-Agent 标头的值。
+
+默认为 php.ini 中的 user_agent 设定。
+
+content string
+在头部之后发送的额外数据。这个选项在 GET 和 HEAD 请求中不使用。
+
+proxy string
+URI，用于指定代理服务器的地址（例如 tcp://proxy.example.com:5100）。
+
+max_redirects integer
+最大重定向次数。1 或者更小则代表不会跟随重定向。
+
+默认为 20.
+
+curl_verify_ssl_host boolean
+校验服务器。
+
+默认为 FALSE
+
+Note:
+
+这个选项在 HTTP 和 FTP 协议中均可使用。
+
+curl_verify_ssl_peer boolean
+要求对使用的SSL证书进行校验。
+
+默认为 FALSE
+
+Note:
+
+这个选项在 HTTP 和 FTP 协议中均可使用。
+
+范例
+
+Example #1 获取一个页面，并以POST发送数据
+
+[demo]
+
+<?php
+
+$postdata = http_build_query(
+    array(
+        'var1' => 'some content',
+        'var2' => 'doh'
+    )
+);
+
+$opts = array('http' =>
+    array(
+        'method'  => 'POST',
+        'header'  => 'Content-type: application/x-www-form-urlencoded',
+        'content' => $postdata
+    )
+);
+
+$context = stream_context_create($opts);
+
+$result = file_get_contents('http://example.com/submit.php', false, $context);
+
+?>
+
+[/demo]
+
+参见
+
+套接字上下文选项
+Phar 上下文（context）选项
+
+Phar 上下文（context）选项 — Phar 上下文（context）选项列表
+
+说明
+
+phar:// 封装（wrapper）的上下文（context）选项。
+
+可选项
+
+compress int
+Phar compression constants 中的一个。
+
+metadata mixed
+Phar 元数据（metadata）。查看 Phar::setMetadata()。
+
+参见
+
+phar://
+Phar stream wrapper
+Context 参数
+
+Context 参数 — Context 参数列表
+
+说明
+
+这些参数（parameters）可以设置为由函数 stream_context_set_params() 返回的 context。
+
+参数
+
+notification callable
+当一个流（stream）上发生事件时，callable 将被调用。
+
+查看 stream_notification_callback 以获得更多信息。
+
+Table of Contents
+
+套接字上下文选项 — 套接字上下文选项列表
+HTTP context 选项 — HTTP context 的选项列表
+FTP context options — FTP context option listing
+SSL context options — SSL context option listing
+CURL context options — CURL 上下文选项列表
+Phar 上下文（context）选项 — Phar 上下文（context）选项列表
+Context 参数 — Context 参数列表
+支持的协议和封装协议
+
+PHP 带有很多内置 URL 风格的封装协议，可用于类似 fopen()、 copy()、 file_exists() 和 filesize() 的文件系统函数。 除了这些封装协议，还能通过 stream_wrapper_register() 来注册自定义的封装协议。
+
+Note: 用于描述一个封装协议的 URL 语法仅支持 scheme://... 的语法。 scheme:/ 和 scheme: 语法是不支持的。
+
+file://
+
+file:// — 访问本地文件系统
+
+说明
+
+文件系统 是 PHP 使用的默认封装协议，展现了本地文件系统。 当指定了一个相对路径（不以/、\、\\或 Windows 盘符开头的路径）提供的路径将基于当前的工作目录。 在很多情况下是脚本所在的目录，除非被修改了。 使用 CLI 的时候，目录默认是脚本被调用时所在的目录。
+
+在某些函数里，例如 fopen() 和 file_get_contents()， include_path 会可选地搜索，也作为相对的路径。
+
+用法
+
+/path/to/file.ext
+relative/path/to/file.ext
+fileInCwd.ext
+C:/path/to/winfile.ext
+C:\path\to\winfile.ext
+\\smbserver\share\path\to\winfile.ext
+file:///path/to/file.ext
+可选项
+
+封装协议概要
+属性	支持
+受 allow_url_fopen 影响	No
+允许读取	Yes
+允许写入	Yes
+允许添加	Yes
+允许同时读和写	Yes
+支持 stat()	Yes
+支持 unlink()	Yes
+支持 rename()	Yes
+支持 mkdir()	Yes
+支持 rmdir()	Yes
+更新日志
+
+版本	说明
+5.0.0	添加了 file://.
+http://
+
+https://
+
+http:// -- https:// — 访问 HTTP(s) 网址
+
+说明
+
+允许通过 HTTP 1.0 的 GET方法，以只读访问文件或资源。 HTTP 请求会附带一个 Host: 头，用于兼容基于域名的虚拟主机。 如果在你的 php.ini 文件中或字节流上下文（context）配置了 user_agent 字符串，它也会被包含在请求之中。
+
+数据流允许读取资源的 body，而 headers 则储存在了 $http_response_header 变量里。
+
+如果需要知道文档资源来自哪个 URL（经过所有重定向的处理后）， 需要处理数据流返回的系列响应报头（response headers）。
+
+The from directive will be used for the From: header if set and not overwritten by the 上下文（Context）选项和参数.
+
+用法
+
+http://example.com
+http://example.com/file.php?var1=val1&var2=val2
+http://user:password@example.com
+https://example.com
+https://example.com/file.php?var1=val1&var2=val2
+https://user:password@example.com
+可选项
+
+封装协议概要
+属性	支持
+受 allow_url_fopen 限制	Yes
+允许读取	Yes
+允许写入	No
+允许添加	No
+允许同时读和写	N/A
+支持 stat()	No
+支持 unlink()	No
+支持 rename()	No
+支持 mkdir()	No
+支持 rmdir()	No
+更新日志
+
+版本	说明
+4.3.7	检测 IIS 服务器避免 "SSL: Fatal Protocol Error" 错误。
+4.3.0	添加 https://。
+4.0.5	增加了对重定向的支持。
+范例
+
+Example #1 检测重定向后最终的 URL
+
+[demo]
+
+<?php
+$url = 'http://www.example.com/redirecting_page.php';
+
+$fp = fopen($url, 'r');
+
+$meta_data = stream_get_meta_data($fp);
+foreach ($meta_data['wrapper_data'] as $response) {
+
+    /* 我们是否被重定向了？ */
+    if (strtolower(substr($response, 0, 10)) == 'location: ') {
+
+        /* 更新我们被重定向后的 $url */
+        $url = substr($response, 10);
+    }
+
+}
+
+?>
+
+[/demo]
+
+注释
+
+Note: openssl 扩展启用后才能够支持 HTTPS 协议。
+
+HTTP 连接是只读的；还不支持对一个 HTTP 资源进行写数据或者复制文件。
+
+比如发送 POST 和 PUT 请求， 可以在 HTTP Contexts 的支持下实现。
+
+参见
+
+HTTP context 选项
+$http_response_header
+stream_get_meta_data() - 从封装协议文件指针中取得报头／元数据
+ftp://
+
+ftps://
+
+ftp:// -- ftps:// — 访问 FTP(s) URLs
+
+说明
+
+允许通过 FTP 读取存在的文件，以及创建新文件。 如果服务器不支持被动（passive）模式的 FTP，连接会失败。
+
+打开文件后你既可以读也可以写，但是不能同时进行。 当远程文件已经存在于 ftp 服务器上，如果尝试打开并写入文件的时候， 未指定上下文（context）选项 overwrite，连接会失败。 如果要通过 FTP 覆盖存在的文件， 指定上下文（context）的 overwrite 选项来打开、写入。 另外可使用 FTP 扩展来代替。
+
+如果你设置了 php.ini 中的 from 指令， 这个值会作为匿名（anonymous）ftp 的密码。
+
+用法
+
+ftp://example.com/pub/file.txt
+ftp://user:password@example.com/pub/file.txt
+ftps://example.com/pub/file.txt
+ftps://user:password@example.com/pub/file.txt
+可选项
+
+封装协议概要
+属性	PHP 4	PHP 5
+受 allow_url_fopen 影响	Yes	Yes
+允许读取	Yes	Yes
+允许写入	Yes (仅支持新文件)	Yes (新文件/启用 overwrite 后已存在的文件)
+允许添加	No	Yes
+允许同时读和写	No	No
+支持 stat()	No	自 5.0.0 起：仅仅 filesize()、 filetype()、 file_exists()、 is_file() 和 is_dir()。 自 PHP 5.1.0 起： filemtime()。
+支持 unlink()	No	Yes
+支持 rename()	No	Yes
+支持 mkdir()	No	Yes
+支持 rmdir()	No	Yes
+更新日志
+
+版本	说明
+4.3.0	增加 ftps://.
+注释
+
+Note:
+
+FTPS 仅在 openssl 扩展开启时有效。
+
+如果服务器不支持 SSL，这个连接会降级（falls back）到普通未加密的 ftp。
+Note: 追加
+自 PHP 5.0.0 起文件可以通过 ftp:// URL 封装器来追加（append）。 在之前的版本，尝试通过 ftp:// 来追加一个文件将会导致错误。
+
+参见
+
+FTP context options
+php://
+
+php:// — 访问各个输入/输出流（I/O streams）
+
+说明
+
+PHP 提供了一些杂项输入/输出（IO）流，允许访问 PHP 的输入输出流、标准输入输出和错误描述符， 内存中、磁盘备份的临时文件流以及可以操作其他读取写入文件资源的过滤器。
+
+php://stdin, php://stdout 和 php://stderr
+
+php://stdin、php://stdout 和 php://stderr 允许直接访问 PHP 进程相应的输入或者输出流。 数据流引用了复制的文件描述符，所以如果你打开 php://stdin 并在之后关了它， 仅是关闭了复制品，真正被引用的 STDIN 并不受影响。 注意 PHP 在这方面的行为有很多 BUG 直到 PHP 5.2.1。 推荐你简单使用常量 STDIN、 STDOUT 和 STDERR 来代替手工打开这些封装器。
+
+php://stdin 是只读的， php://stdout 和 php://stderr 是只写的。
+
+php://input
+
+php://input 是个可以访问请求的原始数据的只读流。 POST 请求的情况下，最好使用 php://input 来代替 $HTTP_RAW_POST_DATA，因为它不依赖于特定的 php.ini 指令。 而且，这样的情况下 $HTTP_RAW_POST_DATA 默认没有填充， 比激活 always_populate_raw_post_data 潜在需要更少的内存。 enctype="multipart/form-data" 的时候 php://input 是无效的。
+
+Note: php://input 打开的数据流只能读取一次； 数据流不支持 seek 操作。 不过，依赖于 SAPI 的实现，请求体数据被保存的时候， 它可以打开另一个 php://input 数据流并重新读取。 通常情况下，这种情况只是针对 POST 请求，而不是其他请求方式，比如 PUT 或者 PROPFIND。
+
+php://output
+
+php://output 是一个只写的数据流， 允许你以 print 和 echo 一样的方式 写入到输出缓冲区。
+
+php://fd
+
+php://fd 允许直接访问指定的文件描述符。 例如 php://fd/3 引用了文件描述符 3。
+
+php://memory 和 php://temp
+
+php://memory 和 php://temp 是一个类似文件 包装器的数据流，允许读写临时数据。 两者的唯一区别是 php://memory 总是把数据储存在内存中， 而 php://temp 会在内存量达到预定义的限制后（默认是 2MB）存入临时文件中。 临时文件位置的决定和 sys_get_temp_dir() 的方式一致。
+
+php://temp 的内存限制可通过添加 /maxmemory:NN 来控制，NN 是以字节为单位、保留在内存的最大数据量，超过则使用临时文件。
+
+php://filter
+
+php://filter 是一种元封装器， 设计用于数据流打开时的筛选过滤应用。 这对于一体式（all-in-one）的文件函数非常有用，类似 readfile()、 file() 和 file_get_contents()， 在数据流内容读取之前没有机会应用其他过滤器。
+
+php://filter 目标使用以下的参数作为它路径的一部分。 复合过滤链能够在一个路径上指定。详细使用这些参数可以参考具体范例。
+
+php://filter 参数
+名称	描述
+resource=<要过滤的数据流>	这个参数是必须的。它指定了你要筛选过滤的数据流。
+read=<读链的筛选列表>	该参数可选。可以设定一个或多个过滤器名称，以管道符（|）分隔。
+write=<写链的筛选列表>	该参数可选。可以设定一个或多个过滤器名称，以管道符（|）分隔。
+<；两个链的筛选列表>	任何没有以 read= 或 write= 作前缀 的筛选器列表会视情况应用于读或写链。
+可选项
+
+封装协议摘要（针对 php://filter，参考被筛选的封装器。）
+属性	支持
+首先于 allow_url_fopen	No
+首先于 allow_url_include	仅 php://input、 php://stdin、 php://memory 和 php://temp。
+允许读取	仅 php://stdin、 php://input、 php://fd、 php://memory 和 php://temp。
+允许写入	仅 php://stdout、 php://stderr、 php://output、 php://fd、 php://memory 和 php://temp。
+允许追加	仅 php://stdout、 php://stderr、 php://output、 php://fd、 php://memory 和 php://temp（等于写入）
+允许同时读写	仅 php://fd、 php://memory 和 php://temp。
+支持 stat()	仅 php://memory 和 php://temp。
+支持 unlink()	No
+支持 rename()	No
+支持 mkdir()	No
+支持 rmdir()	No
+仅仅支持 stream_select()	php://stdin、 php://stdout、 php://stderr、 php://fd 和 php://temp。
+更新日志
+
+版本	说明
+5.3.6	增加 php://fd。
+5.1.0	增加 php://memory 和 php://temp。
+5.0.0	增加 php://filter。
+范例
+
+Example #1 php://temp/maxmemory
+
+这个可选选项允许设置 php://temp 开始使用临时文件前的最大内存限制。
+
+[demo]
+
+<?php
+// Set the limit to 5 MB.
+$fiveMBs = 5 * 1024 * 1024;
+$fp = fopen("php://temp/maxmemory:$fiveMBs", 'r+');
+
+fputs($fp, "hello\n");
+
+// Read what we have written.
+rewind($fp);
+echo stream_get_contents($fp);
+?>
+
+[/demo]
+
+Example #2 php://filter/resource=<待过滤的数据流>
+
+这个参数必须位于 php://filter 的末尾，并且指向需要过滤筛选的数据流。
+
+[demo]
+
+<?php
+/* 这简单等同于：
+  readfile("http://www.example.com");
+  实际上没有指定过滤器 */
+
+readfile("php://filter/resource=http://www.example.com");
+?>
+
+[/demo]
+
+Example #3 php://filter/read=<读链需要应用的过滤器列表>
+
+这个参数采用一个或以管道符 | 分隔的多个过滤器名称。
+
+[demo]
+
+<?php
+/* 这会以大写字母输出 www.example.com 的全部内容 */
+readfile("php://filter/read=string.toupper/resource=http://www.example.com");
+
+/* 这会和以上所做的一样，但还会用 ROT13 加密。 */
+readfile("php://filter/read=string.toupper|string.rot13/resource=http://www.example.com");
+?>
+
+[/demo]
+
+Example #4 php://filter/write=<写链需要应用的过滤器列表>
+
+这个参数采用一个或以管道符 | 分隔的多个过滤器名称。
+
+[demo]
+
+<?php
+/* 这会通过 rot13 过滤器筛选出字符 "Hello World"
+  然后写入当前目录下的 example.txt */
+file_put_contents("php://filter/write=string.rot13/resource=example.txt","Hello World");
+?>
+
+[/demo]
+
+zlib://
+
+bzip2://
+
+zip://
+
+zlib:// -- bzip2:// -- zip:// — 压缩流
+
+说明
+
+zlib: PHP 4.0.4 - PHP 4.2.3（仅支持带 fopencookie 的系统）
+
+compress.zlib:// 和 compress.bzip2:// PHP 4.3.0 及以上
+
+zlib: 的功能类似 gzopen()，但是 其数据流还能被 fread() 和其他文件系统函数使用。 自 PHP 4.3.0 后这个不建议被使用，因为会和其他带“:”字符的文件名混淆； 请使用 compress.zlib:// 作为替代。
+
+compress.zlib://、 compress.bzip2:// 和 gzopen()、bzopen() 是相等的。并且可以在不支持 fopencookie 的系统中使用。
+
+ZIP 扩展 注册了 zip: 封装协议。
+
+可选项
+
+compress.zlib://file.gz
+compress.bzip2://file.bz2
+zip://archive.zip#dir/file.txt
+用法
+
+封装协议摘要
+属性	支持
+受限于 allow_url_fopen	No
+允许读取	Yes
+允许写入	Yes（除了 zip://）
+允许附加	Yes（除了 zip://）
+允许同时读写	No
+支持 stat()	No，请使用普通的 file:// 封装器统计压缩文件。
+支持 unlink()	No，请使用 file:// 封装器删除压缩文件。
+支持 rename()	No
+支持 mkdir()	No
+支持 rmdir()	No
+data://
+
+data:// — 数据（RFC 2397）
+
+说明
+
+自 PHP 5.2.0 起 data:（» RFC 2397）数据流封装器开始有效。
+
+用法
+
+data://text/plain;base64,
+可选项
+
+封装协议摘要
+属性	支持
+受限于 allow_url_fopen	No
+受限于 allow_url_include	Yes
+允许读取	Yes
+允许写入	No
+允许追加	No
+允许同时读写	No
+支持 stat()	No
+支持 unlink()	No
+支持 rename()	No
+支持 mkdir()	No
+支持 rmdir()	No
+范例
+
+Example #1 打印 data:// 的内容
+
+[demo]
+
+<?php
+// 打印 "I love PHP"
+echo file_get_contents('data://text/plain;base64,SSBsb3ZlIFBIUAo=');
+?>
+
+[/demo]
+
+Example #2 获取媒体类型
+
+[demo]
+
+<?php
+$fp   = fopen('data://text/plain;base64,', 'r');
+$meta = stream_get_meta_data($fp);
+
+// 打印 "text/plain"
+echo $meta['mediatype'];
+?>
+
+[/demo]
+
+glob://
+
+glob:// — 查找匹配的文件路径模式
+
+说明
+
+glob: 数据流包装器自 PHP 5.3.0 起开始有效。
+
+用法
+
+glob://
+可选项
+
+封装协议摘要
+属性	支持
+受限于 allow_url_fopen	No
+受限于 allow_url_include	No
+允许读取	No
+允许写入	No
+允许附加	No
+允许同时读写	No
+支持 stat()	No
+支持 unlink()	No
+支持 rename()	No
+支持 mkdir()	No
+支持 rmdir()	No
+范例
+
+Example #1 基本用法
+
+[demo]
+
+<?php
+// 循环 ext/spl/examples/ 目录里所有 *.php 文件
+// 并打印文件名和文件尺寸
+$it = new DirectoryIterator("glob://ext/spl/examples/*.php");
+foreach($it as $f) {
+    printf("%s: %.1FK\n", $f->getFilename(), $f->getSize()/1024);
+}
+?>
+
+[/demo]
+
+tree.php: 1.0K
+findregex.php: 0.6K
+findfile.php: 0.7K
+dba_dump.php: 0.9K
+nocvsdir.php: 1.1K
+phar_from_dir.php: 1.0K
+ini_groups.php: 0.9K
+directorytree.php: 0.9K
+dba_array.php: 1.1K
+class_tree.php: 1.8K
+phar://
+
+phar:// — PHP 归档
+
+说明
+
+phar:// 数据流包装器自 PHP 5.3.0 起开始有效。详细的描述可参见 Phar 数据流包装器。
+
+用法
+
+phar://
+可选项
+
+封装协议摘要
+属性	支持
+支持 allow_url_fopen	No
+支持 allow_url_include	No
+允许读取	Yes
+允许写入	Yes
+允许附加	No
+允许同时读写	Yes
+支持 stat()	Yes
+支持 unlink()	Yes
+支持 rename()	Yes
+支持 mkdir()	Yes
+支持 rmdir()	Yes
+参见
+
+Phar 上下文（context）选项
+ssh2://
+
+ssh2:// — Secure Shell 2
+
+说明
+
+ssh2.shell:// ssh2.exec:// ssh2.tunnel:// ssh2.sftp:// ssh2.scp:// PHP 4.3.0 and up (PECL)
+
+Note: 该封装器默认没有激活
+为了使用 ssh2.*:// 封装协议， 你必须安装来自 » PECL 的 » SSH2 扩展。
+
+除了支持传统的 URI 登录信息，ssh2 封装协议也支持通过 URL 的主机（host）部分来复用打开连接。
+
+用法
+
+ssh2.shell://user:pass@example.com:22/xterm
+ssh2.exec://user:pass@example.com:22/usr/local/bin/somecmd
+ssh2.tunnel://user:pass@example.com:22/192.168.0.1:14
+ssh2.sftp://user:pass@example.com:22/path/to/filename
+可选项
+
+封装协议概要
+属性	ssh2.shell	ssh2.exec	ssh2.tunnel	ssh2.sftp	ssh2.scp
+受 allow_url_fopen 影响	Yes	Yes	Yes	Yes	Yes
+允许读取	Yes	Yes	Yes	Yes	Yes
+允许写入	Yes	Yes	Yes	Yes	No
+允许追加	No	No	No	Yes（当服务器支持的时候）	No
+允许同时读和写	Yes	Yes	Yes	Yes	No
+支持 stat()	No	No	No	Yes	No
+支持 unlink()	No	No	No	Yes	No
+支持 rename()	No	No	No	Yes	No
+支持 mkdir()	No	No	No	Yes	No
+支持 rmdir()	No	No	No	Yes	No
+上下文选项（Context）
+名称	用法	默认
+session	重复使用预连接的 ssh2 资源	 
+sftp	重复使用预先分配的 sftp 资源	 
+methods	密钥交换（key exchange）、主机密钥（hostkey）、cipher、压缩和 MAC 方法	 
+callbacks	 	 
+username	以该用户名连接	 
+password	使用的密码来进行密码验证	 
+pubkey_file	用于验证的公钥（public key）文件	 
+privkey_file	用于验证的私钥（private key）文件	 
+env	需要设置的环境变量的关联数组	 
+term	在分配一个 pty 时请求的终端类型	 
+term_width	在分配一个 pty 时请求的终端宽度	 
+term_height	在分配一个 pty 时请求的终端宽度高度	 
+term_units	term_width 和 term_height 的单位	SSH2_TERM_UNIT_CHARS
+范例
+
+Example #1 从一个活动连接中打开字节流
+
+[demo]
+
+<?php
+$session = ssh2_connect('example.com', 22);
+ssh2_auth_pubkey_file($session, 'username', '/home/username/.ssh/id_rsa.pub',
+                                            '/home/username/.ssh/id_rsa', 'secret');
+$stream = fopen("ssh2.tunnel://$session/remote.example.com:1234", 'r');
+?>
+
+[/demo]
+
+Example #2 This $session variable must be kept available!
+
+In order to use the ssh2.*://$session wrappers you must keep the $session resouce variable. The code below will not have the desired effect:
+
+[demo]
+
+<?php
+$session = ssh2_connect('example.com', 22);
+ssh2_auth_pubkey_file($session, 'username', '/home/username/.ssh/id_rsa.pub',
+                                            '/home/username/.ssh/id_rsa', 'secret');
+$connection_string = "ssh2.sftp://$session/";
+unset($session);
+$stream = fopen($connection_string . "path/to/file", 'r');
+?>
+
+[/demo]
+
+unset() closes the session, because $connection_string does not hold a reference to the $session variable, just a string cast derived from it. This also happens when the unset() is implicit because of leaving scope (like in a function).
+
+rar://
+
+rar:// — RAR
+
+说明
+
+The wrapper takes the url encoded path to the RAR archive (relative or absolute), an optional asterik (*), an optional number sign (#) and an optional url encoded entry name, as stored in the archive. Specifying an entry name requires the number sign; a leading forward slash in the entry name is optional.
+
+This wrapper can open both files and directories. When opening directories, the asterisk sign forces the directory entries names to be returned unencoded. If it‘s not specified, they will be returned url encoded – the reason for this is to allow the wrapper to be correctly used with built-in functionality like the RecursiveDirectoryIterator in the presence of file names that seem like url encoded data.
+
+If the pound sign and the entry name part are not included, the root of the archive will be displayed. This differs from regular directories in that the resulting stream will not contain information such as the modification time, as the root directory is not stored in an individual entry in the archive. The usage of the wrapper with RecursiveDirectoryIterator requires the number sign to be included in the URL when accessing the root, so that the URLs of the children may be constructed correctly.
+
+Note: This wrapper is not enabled by default
+In order to use the rar:// wrapper, you must install the » rar extension available from » PECL.
+
+rar:// Available since PECL rar 3.0.0
+
+用法
+
+rar://<url encoded archive name>[*][#[<url encoded entry name>]]
+可选项
+
+Wrapper Summary
+Attribute	Supported
+Restricted by allow_url_fopen	No
+Restricted by allow_url_include	No
+Allows Reading	Yes
+Allows Writing	No
+Allows Appending	No
+Allows Simultaneous Reading and Writing	No
+Supports stat()	Yes
+Supports unlink()	No
+Supports rename()	No
+Supports mkdir()	No
+Supports rmdir()	No
+Context options
+Name	Usage	Default
+open_password	The password used to encrypt the headers of the archive, if any. WinRAR will encrypt all the files with the same password as the headers password when the later is present, so for archives with encrypted headers, file_password will be ignored.	 
+file_password	The password used to encrypt a file, if any. If the headers are also encrypted, this option will be ignored in favor of open_password. The reason there are two options is to cover the possibility of supporting archives with different headers and file passwords, should those archives arise. Note that if the archive does not have its headers encrypted, open_password will be ignored and this option must be used instead.	 
+volume_callback	A callback to determine the path of missing volumes. See RarArchive::open() for more information.	 
+范例
+
+Example #1 Traversing a RAR archive
+
+[demo]
+
+<?php
+
+class MyRecDirIt extends RecursiveDirectoryIterator {
+    function current() {
+        return rawurldecode($this->getSubPathName()) .
+            (is_dir(parent::current())?" [DIR]":"");
+    }
+}
+
+$f = "rar://" . rawurlencode(dirname(__FILE__)) .
+    DIRECTORY_SEPARATOR . 'dirs_and_extra_headers.rar#';
+
+$it = new RecursiveTreeIterator(new MyRecDirIt($f));
+
+foreach ($it as $s) {
+    echo $s, "\n";
+}
+?>
+
+[/demo]
+
+以上例程的输出类似于：
+
+|-allow_everyone_ni [DIR]
+|-file1.txt
+|-file2_אּ.txt
+|-with_streams.txt
+\-אּ [DIR]
+  |-אּ\%2Fempty%2E [DIR]
+  | \-אּ\%2Fempty%2E\file7.txt
+  |-אּ\empty [DIR]
+  |-אּ\file3.txt
+  |-אּ\file4_אּ.txt
+  \-אּ\אּ_2 [DIR]
+    |-אּ\אּ_2\file5.txt
+    \-אּ\אּ_2\file6_אּ.txt
+Example #2 Opening an encrypted file (header encryption)
+
+[demo]
+
+<?php
+$stream = fopen("rar://" .
+    rawurlencode(dirname(__FILE__)) . DIRECTORY_SEPARATOR .
+    'encrypted_headers.rar' . '#encfile1.txt', "r", false,
+    stream_context_create(
+        array(
+            'rar' =>
+                array(
+                    'open_password' => 'samplepassword'
+                )
+            )
+        )
+    );
+var_dump(stream_get_contents($stream));
+/* creation and last access date is opt-in in WinRAR, hence most
+ * files don't have them */
+var_dump(fstat($stream));
+?>
+
+[/demo]
+
+以上例程的输出类似于：
+
+string(26) "Encrypted file 1 contents."
+Array
+(
+    [0] => 0
+    [1] => 0
+    [2] => 33206
+    [3] => 1
+    [4] => 0
+    [5] => 0
+    [6] => 0
+    [7] => 26
+    [8] => 0
+    [9] => 1259550052
+    [10] => 0
+    [11] => -1
+    [12] => -1
+    [dev] => 0
+    [ino] => 0
+    [mode] => 33206
+    [nlink] => 1
+    [uid] => 0
+    [gid] => 0
+    [rdev] => 0
+    [size] => 26
+    [atime] => 0
+    [mtime] => 1259550052
+    [ctime] => 0
+    [blksize] => -1
+    [blocks] => -1
+)
+ogg://
+
+ogg:// — 音频流
+
+说明
+
+通过包装器 ogg:// 读取的文件， 是作为 OGG/Vorbis 格式的压缩音频编码。 同样，通过包装器 ogg:// 写入或追加的数据格式也是压缩音频。 当 stream_get_meta_data() 用于一个打开读取的 OGG/Vorbis 文件时，会返回关于数据流的详细信息，包含了 vendor 标签、任何内含的 comments、 channels 数字、采样率（rate），以及 用 bitrate_lower、bitrate_upper、 bitrate_nominal 和 bitrate_window 描述的可变比特率范围。
+
+ogg:// PHP 4.3.0 及以上（PECL）
+
+Note: 该封装器默认未激活
+要使用 ogg:// 封装器，您必须安装 » OGG/Vorbis 扩展。 可以在 » PECL 上找到。
+
+用法
+
+ogg://soundfile.ogg
+ogg:///path/to/soundfile.ogg
+ogg://http://www.example.com/path/to/soundstream.ogg
+可选项
+
+封装协议摘要
+属性	支持
+受限于 allow_url_fopen	No
+允许读取	Yes
+允许写入	Yes
+允许附加	Yes
+允许同时读写	No
+支持 stat()	No
+支持 unlink()	No
+支持 rename()	No
+支持 mkdir()	No
+支持 rmdir()	No
+上下文选项
+Name	Usage	Default	Mode
+pcm_mode	读取时使用如下 PCM 编码之一: OGGVORBIS_PCM_U8、OGGVORBIS_PCM_S8、 OGGVORBIS_PCM_U16_BE、OGGVORBIS_PCM_S16_BE、 OGGVORBIS_PCM_U16_LE 和 OGGVORBIS_PCM_S16_LE。 (8 或 16 位，签名或未签名，大或小的 endian)	OGGVORBIS_PCM_S16_LE	读取
+rate	输入数据的采样率，单位为 Hz	44100	写入/附加
+bitrate	若给的值为整数，则是用固定的比特率进行编码。（16000 到 131072）若给的值为浮点数，则使用可变的比特率（质。(-1.0 到 1.0）	128000	写入/附加
+channels	要编码的声道的数量，典型为 1 (单声道), 或 2 (立体声)。最高支持 16 声道。	2	写入/附加
+comments	编码到音轨头部的字符串数组。	 	写入/附加
+范例
+
+expect://
+
+expect:// — 处理交互式的流
+
+说明
+
+由 expect:// 封装协议打开的数据流 PTY 通过提供了对进程 stdio、stdout 和 stderr 的访问。
+
+Note: 该封装协议默认未开启
+为了使用 expect:// 封装器，你必须安装 » PECL 上的 » Expect 扩展。
+
+expect:// PHP 4.3.0 and up (PECL)
+
+用法
+
+expect://command
+可选项
+
+封装协议概要
+属性	支持
+受 allow_url_fopen 影响	No
+允许读取	Yes
+允许写入	Yes
+允许添加	Yes
+允许同时读和写	No
+支持 stat()	No
+支持 unlink()	No
+支持 rename()	No
+支持 mkdir()	No
+支持 rmdir()	No
+范例
+
+Table of Contents
+
+file:// — 访问本地文件系统
+http:// — 访问 HTTP(s) 网址
+ftp:// — 访问 FTP(s) URLs
+php:// — 访问各个输入/输出流（I/O streams）
+zlib:// — 压缩流
+data:// — 数据（RFC 2397）
+glob:// — 查找匹配的文件路径模式
+phar:// — PHP 归档
+ssh2:// — Secure Shell 2
+rar:// — RAR
+ogg:// — 音频流
+expect:// — 处理交互式的流

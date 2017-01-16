@@ -1,0 +1,373 @@
+十四：生成器
+
+Table of Contents
+
+14.1 生成器
+14.2 Generator syntax
+14.3 Generator objects
+14.4 Comparing generators with Iterator objects
+
+
+14.1 生成器
+
+(PHP 5 >= 5.5.0)
+
+生成器提供了一种更容易的方法来实现简单的对象迭代，但没有实现一个具有 Iterator 接口的类所带来的性能开销和复杂性。
+
+生成器允许你在 foreach 代码块中写代码来迭代一组数据而不需要在内存中创建一个数组, 那会使你的内存达到上限，或者会占据可观的处理时间。相反，你可以写一个生成器函数，就像一个普通的自定义函数一样, 和普通函数只返回一次不同的是, 生成器可以根据需要 yield 多次，以便生成需要迭代的值。
+
+一个简单的例子就是使用生成器来重新实现 range() 函数。 标准的 range() 函数需要为其中的每一个返回值在内存中生成一个数组, 结果就是生成一个很大的数组。 比如，调用 range(0, 1000000) 将导致内存占用超过 100 MB。
+
+做为一种替代方法, 我们可以实现一个 xrange() 生成器, 只需要足够的内存来创建 Iterator 对象并在内部跟踪生成器的当前状态，这样只需要不到1K字节的内存。
+
+Example #1 将 range() 实现为生成器
+
+[demo]
+
+<?php
+function xrange($start, $limit, $step = 1) {
+    if ($start < $limit) {
+        if ($step <= 0) {
+            throw new LogicException('Step must be +ve');
+        }
+
+        for ($i = $start; $i <= $limit; $i += $step) {
+            yield $i;
+        }
+    } else {
+        if ($step >= 0) {
+            throw new LogicException('Step must be -ve');
+        }
+
+        for ($i = $start; $i >= $limit; $i += $step) {
+            yield $i;
+        }
+    }
+}
+
+/* Note that both range() and xrange() result in the same
+ * output below. */
+
+echo 'Single digit odd numbers from range():  ';
+foreach (range(1, 9, 2) as $number) {
+    echo "$number ";
+}
+echo "\n";
+
+echo 'Single digit odd numbers from xrange(): ';
+foreach (xrange(1, 9, 2) as $number) {
+    echo "$number ";
+}
+?>
+
+[/demo]
+
+以上例程会输出：
+
+Single digit odd numbers from range():  1 3 5 7 9 
+Single digit odd numbers from xrange(): 1 3 5 7 9
+
+
+14.2 Generator syntax
+
+A generator function looks just like a normal function, except that instead of returning a value, a generator yields as many values as it needs to.
+
+When a generator function is called, it returns an object that can be iterated over. When you iterate over that object (for instance, via a foreach loop), PHP will call the generator function each time it needs a value, then saves the state of the generator when the generator yields a value so that it can be resumed when the next value is required.
+
+Once there are no more values to be yielded, then the generator function can simply exit, and the calling code continues just as if an array has run out of values.
+
+Note:
+
+A generator cannot return a value: doing so will result in a compile error. An empty return statement is valid syntax within a generator and it will terminate the generator.
+
+yield keyword
+
+The heart of a generator function is the yield keyword. In its simplest form, a yield statement looks much like a return statement, except that instead of stopping execution of the function and returning, yield instead provides a value to the code looping over the generator and pauses execution of the generator function.
+
+Example #1 A simple example of yielding values
+
+[demo]
+
+<?php
+function gen_one_to_three() {
+    for ($i = 1; $i <= 3; $i++) {
+        // Note that $i is preserved between yields.
+        yield $i;
+    }
+}
+
+$generator = gen_one_to_three();
+foreach ($generator as $value) {
+    echo "$value\n";
+}
+?>
+
+[/demo]
+
+以上例程会输出：
+
+1
+2
+3
+Note:
+
+Internally, sequential integer keys will be paired with the yielded values, just as with a non-associative array.
+
+Caution
+If you use yield in an expression context (for example, on the right hand side of an assignment), you must surround the yield statement with parentheses. For example, this is valid:
+
+$data = (yield $value);
+But this is not, and will result in a parse error:
+
+$data = yield $value;
+This syntax may be used in conjunction with the send() method on Generator objects.
+
+Yielding values with keys
+
+PHP also supports associative arrays, and generators are no different. In addition to yielding simple values, as shown above, you can also yield a key at the same time.
+
+The syntax for yielding a key/value pair is very similar to that used to define an associative array, as shown below.
+
+Example #2 Yielding a key/value pair
+
+[demo]
+
+<?php
+/* The input is semi-colon separated fields, with the first
+ * field being an ID to use as a key. */
+
+$input = <<<'EOF'
+1;PHP;Likes dollar signs
+2;Python;Likes whitespace
+3;Ruby;Likes blocks
+EOF;
+
+function input_parser($input) {
+    foreach (explode("\n", $input) as $line) {
+        $fields = explode(';', $line);
+        $id = array_shift($fields);
+
+        yield $id => $fields;
+    }
+}
+
+foreach (input_parser($input) as $id => $fields) {
+    echo "$id:\n";
+    echo "    $fields[0]\n";
+    echo "    $fields[1]\n";
+}
+?>
+
+[/demo]
+
+以上例程会输出：
+
+1:
+    PHP
+    Likes dollar signs
+2:
+    Python
+    Likes whitespace
+3:
+    Ruby
+    Likes blocks
+Caution
+As with the simple value yields shown earlier, yielding a key/value pair in an expression context requires the yield statement to be parenthesised:
+
+$data = (yield $key => $value);
+Yielding null values
+
+Yield can be called without an argument to yield a NULL value with an automatic key.
+
+Example #3 Yielding NULLs
+
+[demo]
+
+<?php
+function gen_three_nulls() {
+    foreach (range(1, 3) as $i) {
+        yield;
+    }
+}
+
+var_dump(iterator_to_array(gen_three_nulls()));
+?>
+
+[/demo]
+
+以上例程会输出：
+
+array(3) {
+  [0]=>
+  NULL
+  [1]=>
+  NULL
+  [2]=>
+  NULL
+}
+Yielding by reference
+
+Generator functions are able to yield values by reference as well as by value. This is done in the same way as returning references from functions: by prepending an ampersand to the function name.
+
+Example #4 Yielding values by reference
+
+[demo]
+
+<?php
+function &gen_reference() {
+    $value = 3;
+
+    while ($value > 0) {
+        yield $value;
+    }
+}
+
+/* Note that we can change $number within the loop, and
+ * because the generator is yielding references, $value
+ * within gen_reference() changes. */
+foreach (gen_reference() as &$number) {
+    echo (--$number).'... ';
+}
+?>
+
+[/demo]
+
+以上例程会输出：
+
+2... 1... 0... 
+
+
+14.3 Generator objects
+
+When a generator function is called for the first time, an object of the internal Generator class is returned. This object implements the Iterator interface in much the same way as a forward-only iterator object would.
+
+Most methods in the Generator class have the same semantics as the methods in the Iterator interface, but generator objects also have one additional method: send().
+
+Caution
+Generator objects cannot be instantiated via new.
+
+Example #1 The Generator class
+
+[demo]
+
+<?php
+class Generator implements Iterator {
+    public function rewind();          // Rewinds the iterator. If
+                                       // iteration has already begun,
+                                       // this will throw an exception.
+
+    public function valid();           // Returns false if the
+                                       // iterator has been closed.
+                                       // Otherwise returns true.
+
+    public function current();         // Returns the yielded value.
+
+    public function key();             // Returns the yielded key.
+
+    public function next();            // Resumes execution of the
+                                       // generator.
+    
+    public function send($value);      // Sends the given value to the
+                                       // generator as the result of
+                                       // the yield expression and
+                                       // resumes execution of the
+                                       // generator.
+}
+?>
+
+[/demo]
+
+Generator::send()
+
+Generator::send() allows values to be injected into generator functions while iterating over them. The injected value will be returned from the yield statement and can then be used like any other variable within the generator function.
+
+Example #2 Using Generator::send() to inject values
+
+[demo]
+
+<?php
+function printer() {
+    while (true) {
+        $string = yield;
+        echo $string;
+    }
+}
+
+$printer = printer();
+$printer->send('Hello world!');
+?>
+
+[/demo]
+
+以上例程会输出：
+
+Hello world!
+
+
+14.4 Comparing generators with Iterator objects
+
+The primary advantage of generators is their simplicity. Much less boilerplate code has to be written compared to implementing an Iterator class, and the code is generally much more readable. For example, the following function and class are equivalent:
+
+[demo]
+
+<?php
+function getLinesFromFile($fileName) {
+    if (!$fileHandle = fopen($fileName, 'r')) {
+        return;
+    }
+ 
+    while (false !== $line = fgets($fileHandle)) {
+        yield $line;
+    }
+ 
+    fclose($fileHandle);
+}
+
+// versus...
+
+class LineIterator implements Iterator {
+    protected $fileHandle;
+ 
+    protected $line;
+    protected $i;
+ 
+    public function __construct($fileName) {
+        if (!$this->fileHandle = fopen($fileName, 'r')) {
+            throw new RuntimeException('Couldn\'t open file "' . $fileName . '"');
+        }
+    }
+ 
+    public function rewind() {
+        fseek($this->fileHandle, 0);
+        $this->line = fgets($this->fileHandle);
+        $this->i = 0;
+    }
+ 
+    public function valid() {
+        return false !== $this->line;
+    }
+ 
+    public function current() {
+        return $this->line;
+    }
+ 
+    public function key() {
+        return $this->i;
+    }
+ 
+    public function next() {
+        if (false !== $this->line) {
+            $this->line = fgets($this->fileHandle);
+            $this->i++;
+        }
+    }
+ 
+    public function __destruct() {
+        fclose($this->fileHandle);
+    }
+}
+?>
+
+[/demo]
+
+This flexibility does come at a cost, however: generators are forward-only iterators, and cannot be rewound once iteration has started. This also means that the same generator can't be iterated over multiple times: the generator will need to either be rebuilt by calling the generator function again, or cloned via the clone keyword.
